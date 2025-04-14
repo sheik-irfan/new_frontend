@@ -103,3 +103,90 @@
   font-size: 18px;
   margin-bottom: 10px;
 }
+.wallet-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.wallet-card {
+  padding: 1.5rem;
+  background: #f5f7fa;
+  border: 2px solid #dce3ec;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.wallet-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.balance {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.topup-btn {
+  background-color: #38bdf8;
+  color: white;
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.topup-btn:hover {
+  background-color: #0ea5e9;
+}
+.wallet-message {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+/* Add inside or modify styles */
+
+.wallet-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.wallet-card {
+  padding: 1.5rem;
+  background: #f0f9ff;
+  border: 2px solid #bae6fd;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.wallet-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.balance {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #0c4a6e;
+}
+
+.topup-btn {
+  background-color: #0ea5e9;
+  color: white;
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.topup-btn:hover {
+  background-color: #0284c7;
+}

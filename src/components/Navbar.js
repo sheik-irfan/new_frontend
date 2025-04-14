@@ -1,10 +1,16 @@
-// src/components/Navbar.js
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "animate.css";
 import "../styles/Navbar.css";
 
 const Navbar = ({ user, onLogout }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    onLogout();
+    navigate("/");
+  };
+
   return (
     <nav className="navbar animate__animated animate__fadeInDown">
       <div className="logo">
@@ -19,7 +25,7 @@ const Navbar = ({ user, onLogout }) => {
         ) : (
           <>
             <li className="user-info">👤 {user.userEmail}</li>
-            <li><button onClick={onLogout} className="logout-btn">🚪 Logout</button></li>
+            <li><button onClick={handleLogout} className="logout-btn">🚪 Logout</button></li>
           </>
         )}
       </ul>

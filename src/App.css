@@ -1,0 +1,180 @@
+/* src/App.css or src/styles/App.css */
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+  }
+  
+  /* Navbar styling */
+  .navbar {
+    background-color: #2d3e50;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+  
+  .navbar a {
+    color: white;
+    margin-left: 1rem;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .navbar a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Login/Register form containers */
+  .auth-container {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .auth-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .login-form input,
+  .login-form button {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  
+  .login-form input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .login-form button {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .login-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  .remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+  }
+  
+  .error {
+    color: red;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+  
+  /* Dashboard layout */
+  .dashboard-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .sidebar {
+    width: 220px;
+    background-color: #1f2a38;
+    color: white;
+    padding: 2rem 1rem;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sidebar h2 {
+    margin-bottom: 2rem;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar li {
+    margin-bottom: 1rem;
+  }
+  
+  .sidebar a,
+  .sidebar button {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .sidebar a:hover,
+  .sidebar button:hover {
+    text-decoration: underline;
+  }
+  
+  .logout-btn {
+    font-weight: bold;
+    color: #ff6b6b;
+  }
+  
+  .dashboard-main {
+    flex: 1;
+    padding: 2rem;
+    background: #fff;
+  }
+  
+  .flight-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+  
+  .flight-list li {
+    background: #f1f5f9;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .flight-list li:hover {
+    transform: scale(1.01);
+    background-color: #e2e8f0;
+  }
+  
+  .flight-list button {
+    margin-left: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #22c55e;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .flight-list button:hover {
+    background-color: #16a34a;
+  }
+  
+  /* Toastify container override (optional) */
+  .Toastify__toast {
+    font-size: 0.95rem;
+  }
+  

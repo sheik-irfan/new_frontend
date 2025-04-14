@@ -1,16 +1,27 @@
-// src/pages/Dashboard.js
-import React, { useState, useEffect } from "react";
+// src/pages/AdminDashboard.js
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import "../styles/Dashboard.css";
+import { Link, useNavigate } from "react-router-dom";
+import "../styles/AdminDashboard.css";
 import "animate.css";
 
 const API_URL = "http://localhost:1212/api";
 
-const Dashboard = ({ token, userId, onLogout }) => {
+const AdminDashboard = ({ token }) => {
   const [flights, setFlights] = useState([]);
-  const [wallet, setWallet] = useState(null);
   const [airplanes, setAirplanes] = useState([]);
+  const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    } else {
+      fetchFlights();
+      fetchAirplanes();
+      fetchUsers();
+    }
+  }, [token, navigate]);
 
   const fetchFlights = async () => {
     try {
@@ -20,18 +31,6 @@ const Dashboard = ({ token, userId, onLogout }) => {
       setFlights(res.data);
     } catch (err) {
       console.error("Failed to fetch flights", err);
-    }
-  };
-
-  const fetchWallet = async () => {
-    if (!userId) return;
-    try {
-      const res = await axios.get(`${API_URL}/wallets/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setWallet(res.data);
-    } catch (err) {
-      console.error("Failed to fetch wallet", err);
     }
   };
 
@@ -46,90 +45,75 @@ const Dashboard = ({ token, userId, onLogout }) => {
     }
   };
 
-  const bookFlight = async (flightId) => {
+  const fetchUsers = async () => {
     try {
-      await axios.post(
-        `${API_URL}/bookings`,
-        { userId, flightId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert("🎉 Flight booked successfully!");
+      const res = await axios.get(`${API_URL}/users`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUsers(res.data);
     } catch (err) {
-      alert("❌ Booking failed");
+      console.error("Failed to fetch users", err);
     }
   };
 
-  const topUpWallet = async (amount) => {
-    try {
-      await axios.post(
-        `${API_URL}/wallets/topup`,
-        { userId, amount },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      fetchWallet();
-      alert("✅ Wallet topped up successfully!");
-    } catch (err) {
-      alert("❌ Top-up failed");
-    }
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
   };
-
-  useEffect(() => {
-    fetchFlights();
-    fetchWallet();
-    fetchAirplanes();
-  }, []);
 
   return (
-    <div className="dashboard-container animate__animated animate__fadeIn">
-      <aside className="sidebar animate__animated animate__fadeInLeft animate__delay-1s">
-        <h2 className="animate__animated animate__fadeInDown animate__faster">Dashboard</h2>
-        <nav>
-          <ul>
-            <li><Link to="/flights">✈️ View Flights</Link></li>
-            <li><Link to="/airports">🛫 Airports</Link></li>
-            <li><Link to="/airplanes">🛬 Airplanes</Link></li>
-            <li><Link to="/wallet">💰 Wallet</Link></li>
-            <li><Link to="/bookings">📄 Booking History</Link></li>
-            {userId && <li><Link to="/admin">🛠 Admin Dashboard</Link></li>}
-            <li><button className="logout-btn" onClick={onLogout}>🚪 Logout</button></li>
-          </ul>
-        </nav>
+    <div className="admin-dashboard animate__animated animate__fadeIn">
+      <aside className="admin-sidebar animate__animated animate__fadeInLeft">
+        <h2>Admin Panel</h2>
+        <ul>
+          <li><Link to="/dashboard">🏠 Main Dashboard</Link></li>
+          <li><Link to="/flights">✈️ Manage Flights</Link></li>
+          <li><Link to="/airplanes">🛬 Manage Airplanes</Link></li>
+          <li><Link to="/airports">🛫 Manage Airports</Link></li>
+          <li><Link to="/wallet">💰 Wallets</Link></li>
+          <li><Link to="/bookings">📄 Bookings</Link></li>
+          <li><button className="admin-logout" onClick={handleLogout}>🚪 Logout</button></li>
+        </ul>
       </aside>
 
-      <main className="dashboard-main animate__animated animate__fadeInUp animate__delay-1s">
-        <h1 className="animate__animated animate__zoomIn">🎯 Welcome to Your Flight Dashboard</h1>
+      <main className="admin-main">
+        <h1 className="animate__animated animate__fadeInDown">🛠 Admin Dashboard</h1>
 
-        <h2>Available Flights</h2>
-        <ul className="flight-list">
+        <div className="admin-section">
+          <h3>All Flights</h3>
           {flights.map((flight) => (
-            <li key={flight.flightId} className="animate__animated animate__fadeInUp animate__faster">
-              ✈️ <strong>{flight.flightNumber}</strong> — {flight.source} → {flight.destination} on <em>{flight.departureDate}</em>
-              <button onClick={() => bookFlight(flight.flightId)}>Book</button>
-            </li>
+            <div key={flight.flightId} className="admin-card">
+              <h4>{flight.flightNumber}</h4>
+              <p>{flight.source} → {flight.destination}</p>
+              <p>Departure: {flight.departureDate}</p>
+            </div>
           ))}
-        </ul>
+        </div>
 
-        <h2>Airplanes</h2>
-        <ul className="flight-list">
-          {airplanes.map((airplane) => (
-            <li key={airplane.airplaneId} className="animate__animated animate__fadeInUp animate__faster">
-              🛬 <strong>{airplane.model}</strong> — {airplane.manufacturer} | Capacity: {airplane.capacity}
-            </li>
+        <div className="admin-section">
+          <h3>All Airplanes</h3>
+          {airplanes.map((plane) => (
+            <div key={plane.airplaneId} className="admin-card">
+              <h4>{plane.model}</h4>
+              <p>Manufacturer: {plane.manufacturer}</p>
+              <p>Capacity: {plane.capacity}</p>
+            </div>
           ))}
-        </ul>
+        </div>
 
-        <h2>Wallet</h2>
-        {wallet ? (
-          <p className="animate__animated animate__fadeIn">💰 Balance: ₹{wallet.balance.toLocaleString()}</p>
-        ) : (
-          <button onClick={fetchWallet}>Load Wallet</button>
-        )}
-        <div>
-          <button onClick={() => topUpWallet(1000)}>Top Up ₹1000</button>
+        <div className="admin-section">
+          <h3>All Users</h3>
+          {users.map((user) => (
+            <div key={user.userId} className="admin-card">
+              <h4>{user.userName}</h4>
+              <p>Email: {user.userEmail}</p>
+              <p>Role: {user.role}</p>
+            </div>
+          ))}
         </div>
       </main>
     </div>
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;

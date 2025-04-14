@@ -1,0 +1,142 @@
+/* src/styles/AdminDashboard.css */
+
+.admin-dashboard {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f6f8;
+  }
+  
+  /* Sidebar */
+  .admin-sidebar {
+    width: 220px;
+    background-color: #1f2a38;
+    color: #ffffff;
+    padding: 2rem 1rem;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .admin-sidebar h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .admin-sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .admin-sidebar li {
+    margin-bottom: 1rem;
+  }
+  
+  .admin-sidebar a,
+  .admin-sidebar button {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .admin-sidebar a:hover,
+  .admin-sidebar button:hover {
+    text-decoration: underline;
+  }
+  
+  .admin-logout {
+    font-weight: bold;
+    color: #ff6b6b;
+  }
+  
+  /* Main panel */
+  .admin-main {
+    flex: 1;
+    padding: 2rem;
+    background-color: #ffffff;
+  }
+  
+  .admin-main h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .admin-section {
+    margin-top: 2rem;
+  }
+  
+  .admin-section h3 {
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    color: #333;
+  }
+  
+  /* List cards for data */
+  .admin-card {
+    background-color: #f1f5f9;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .admin-card:hover {
+    transform: scale(1.01);
+    background-color: #e2e8f0;
+  }
+  
+  .admin-card h4 {
+    margin: 0 0 0.3rem 0;
+  }
+  
+  .admin-card p {
+    margin: 0.2rem 0;
+    color: #555;
+  }
+  
+  /* Add/Edit form */
+  .admin-form {
+    background: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+  }
+  
+  .admin-form input,
+  .admin-form select,
+  .admin-form button {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  
+  .admin-form input:focus,
+  .admin-form select:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .admin-form button {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .admin-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Admin toast notifications */
+  .Toastify__toast {
+    font-size: 0.95rem;
+  }
+  
