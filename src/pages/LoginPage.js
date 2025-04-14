@@ -1,58 +1,67 @@
+// src/pages/LoginPage.js
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import "../styles/LoginPage.css";
- 
+import "../styles/LoginPage.css"; // optional CSS
+import "animate.css";
+
 const API_URL = "http://localhost:1212/api";
- 
+
 const LoginPage = ({ onLogin }) => {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const [remember, setRemember] = useState(false);
-  const [loading, setLoading] = useState(false);
- 
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
- 
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
- 
+    setError("");
+
     try {
       const res = await axios.post(`${API_URL}/login`, {
         userEmail,
         userPassword,
       });
- 
-      const { token, role, userId } = res.data;
-      const user = { userEmail, userRole: role, userId };
- 
-      if (remember) {
+
+      const { token, role, id } = res.data;
+
+      const user = {
+        userEmail,
+        userRole: role,
+        userId: id,
+      };
+
+      // Save to local or session storage
+      if (rememberMe) {
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
+      } else {
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("user", JSON.stringify(user));
       }
- 
-      onLogin(user, token);
-      toast.success("Login successful!", { position: "top-center" });
- 
+
+      // 🔁 Correct parameter order: token, then user
+      onLogin(token, user);
+
+      // Navigate to respective dashboard
       if (role === "CUSTOMER") {
         navigate("/dashboard");
       } else if (role === "ADMIN") {
         navigate("/admin");
       } else {
-        toast.error("Unsupported role");
+        setError("Access denied: Unrecognized role.");
       }
     } catch (err) {
-      toast.error("Invalid credentials");
-    } finally {
-      setLoading(false);
+      console.error("Login error:", err);
+      setError("❌ Invalid email or password.");
     }
   };
- 
+
   return (
-    <div className="login-container animate__animated animate__fadeIn">
-      <form className="login-form" onSubmit={handleLogin}>
-        <h2>Login to FireWings</h2>
+    <div className="auth-container animate__animated animate__fadeIn">
+      <h2 className="animate__animated animate__fadeInDown">Login</h2>
+      <form onSubmit={handleLogin} className="login-form">
         <input
           type="email"
           placeholder="Email"
@@ -67,21 +76,21 @@ const LoginPage = ({ onLogin }) => {
           onChange={(e) => setUserPassword(e.target.value)}
           required
         />
-        <label className="remember-label">
+        <label className="remember-me">
           <input
             type="checkbox"
-            checked={remember}
-            onChange={() => setRemember(!remember)}
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
           />
           Remember me
         </label>
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+        <button type="submit" className="btn-login">
+          Login
         </button>
+        {error && <p className="error animate__animated animate__shakeX">{error}</p>}
       </form>
     </div>
   );
 };
- 
+
 export default LoginPage;
- 
