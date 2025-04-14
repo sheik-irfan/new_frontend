@@ -1,0 +1,32 @@
+.sort-btn {
+    margin-bottom: 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s ease;
+  }
+  
+  .sort-btn:hover {
+    background: #0056b3;
+  }
+  
+  .cancel-btn {
+    float: right;
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+  }
+  
+  .cancel-btn:hover {
+    background: #b52a36;
+  }
+  

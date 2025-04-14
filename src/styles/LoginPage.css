@@ -1,0 +1,69 @@
+/* src/styles/LoginPage.css */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 1rem;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e0f7fa, #fff);
+  }
+  
+  .login-form {
+    background-color: #fff;
+    border-radius: 1rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .login-form h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+    color: #0077b6;
+  }
+  
+  .login-form input[type="email"],
+  .login-form input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    transition: border 0.3s ease;
+  }
+  
+  .login-form input:focus {
+    border-color: #0077b6;
+    outline: none;
+  }
+  
+  .login-form .remember-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .login-form .remember-label input {
+    margin-right: 0.5rem;
+  }
+  
+  .login-form button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #0077b6;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .login-form button:hover {
+    background-color: #005f8f;
+  }
+  

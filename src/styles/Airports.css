@@ -1,0 +1,28 @@
+.airports-container {
+    padding: 2rem;
+  }
+  
+  .airport-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .airport-card {
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+  }
+  
+  .airport-card:hover {
+    transform: scale(1.02);
+    background-color: #eef7ff;
+  }
+  
+  .error-msg {
+    color: red;
+    font-weight: bold;
+  }
+  

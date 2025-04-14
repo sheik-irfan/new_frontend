@@ -1,0 +1,40 @@
+.search-box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  .search-box input,
+  .search-box select {
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    width: 220px;
+    transition: border-color 0.3s;
+  }
+  
+  .search-box input:focus,
+  .search-box select:focus {
+    border-color: #00796b;
+    outline: none;
+  }
+  
+  .search-box button {
+    padding: 12px 24px;
+    background-color: #00796b;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s;
+  }
+  
+  .search-box button:hover {
+    background-color: #004d40;
+    transform: scale(1.05);
+  }
+  

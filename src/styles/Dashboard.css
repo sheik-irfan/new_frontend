@@ -1,0 +1,105 @@
+/* src/styles/Dashboard.css */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f7fa;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.sidebar {
+  background-color: #1e2a38;
+  color: white;
+  padding: 20px;
+  width: 240px;
+  border-right: 3px solid #2b3b4d;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+  margin-bottom: 30px;
+  font-size: 24px;
+  color: #00bcd4;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 15px 0;
+}
+
+.sidebar a,
+.logout-btn {
+  color: white;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: color 0.3s;
+}
+
+.sidebar a:hover,
+.logout-btn:hover {
+  color: #00bcd4;
+}
+
+.dashboard-main {
+  flex: 1;
+  padding: 40px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.dashboard-main h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.dashboard-main h2 {
+  margin-top: 30px;
+  color: #444;
+}
+
+.flight-list {
+  padding: 0;
+  list-style: none;
+}
+
+.flight-list li {
+  background: white;
+  padding: 15px 20px;
+  margin: 10px 0;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.flight-list li:hover {
+  transform: scale(1.02);
+}
+
+.flight-list button {
+  background: #00bcd4;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.flight-list button:hover {
+  background: #0195a8;
+}
+
+.wallet-balance {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+}

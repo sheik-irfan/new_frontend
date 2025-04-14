@@ -1,0 +1,68 @@
+.admin-flights-container {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+  
+  .admin-flights-container h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .add-flight-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  
+  .add-flight-form input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1 1 150px;
+  }
+  
+  .add-flight-form button {
+    padding: 0.5rem 1rem;
+    background-color: #0069d9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-flight-form button:hover {
+    background-color: #0053b3;
+  }
+  
+  .flights-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .flights-list li {
+    background: #ffffff;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .flights-list button {
+    background-color: #dc3545;
+    border: none;
+    padding: 0.4rem 0.75rem;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .flights-list button:hover {
+    background-color: #bd2130;
+  }
+  
