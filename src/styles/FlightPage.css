@@ -1,65 +1,58 @@
-/* src/styles/FlightPage.css */
-.flight-page-container {
-    padding: 40px;
-    background: linear-gradient(to right, #eef2f3, #8e9eab);
-    min-height: 100vh;
-    animation: fadeIn 0.5s ease-in;
-  }
-  
-  h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 2rem;
-    color: #333;
-  }
-  
-  .flights-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .flight-card {
-    background: #ffffff;
-    padding: 20px 30px;
-    border-radius: 15px;
-    width: 300px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .flight-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-  }
-  
-  .flight-card p {
-    margin: 10px 0;
-    font-size: 1rem;
-    color: #333;
-  }
-  
-  .no-results {
-    font-size: 1.2rem;
-    color: #444;
-    text-align: center;
-    margin-top: 50px;
-  }
-  
-  .fade-in {
-    animation: fadeIn 0.7s ease-in-out;
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(15px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
+.admin-flights-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+  background-color: #f8f8f8;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.filter-bar input,
+.filter-bar select {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  min-width: 200px;
+}
+
+.flights-list {
+  list-style: none;
+  padding: 0;
+}
+
+.flight-card {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+
+.flight-card:hover {
+  transform: scale(1.01);
+}
+
+.no-flights {
+  text-align: center;
+  font-style: italic;
+  color: gray;
+  margin-top: 2rem;
+}

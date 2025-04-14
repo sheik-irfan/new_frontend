@@ -1,10 +1,56 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import confetti from "canvas-confetti";
 import "animate.css";
 import "../styles/Navbar.css";
 
 const Navbar = ({ user, onLogout }) => {
   const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [animationClass, setAnimationClass] = useState("animate__fadeInDown");
+  const clickCountRef = useRef(0);
+  const clickTimeoutRef = useRef(null);
+  const hideTimeoutRef = useRef(null);
+
+  const handleLogoClick = () => {
+    clickCountRef.current++;
+
+    if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
+
+    clickTimeoutRef.current = setTimeout(() => {
+      clickCountRef.current = 0;
+    }, 500); // 500ms reset
+
+    if (clickCountRef.current >= 3) {
+      triggerDropdown();
+      clickCountRef.current = 0;
+    }
+  };
+
+  const triggerDropdown = () => {
+    setShowDropdown(true);
+    setAnimationClass("animate__fadeInDown");
+
+    // Fire confetti
+    confetti({
+      particleCount: 150,
+      spread: 90,
+      origin: { y: 0.6 },
+    });
+
+    // Play sound
+    const audio = new Audio("https://www.myinstants.com/media/sounds/yeah-boy.mp3");
+    audio.play();
+
+    // Auto-hide after 3 seconds with fade out
+    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+    hideTimeoutRef.current = setTimeout(() => {
+      setAnimationClass("animate__fadeOutUp");
+      setTimeout(() => {
+        setShowDropdown(false);
+      }, 500); // wait for fade out to finish
+    }, 3000);
+  };
 
   const handleLogout = () => {
     onLogout();
@@ -13,9 +59,16 @@ const Navbar = ({ user, onLogout }) => {
 
   return (
     <nav className="navbar animate__animated animate__fadeInDown">
-      <div className="logo">
+      <div className="logo" onClick={handleLogoClick}>
         <Link to="/">🛫 FlyFast</Link>
       </div>
+
+      {showDropdown && (
+        <div className={`dropdown animate__animated ${animationClass}`}>
+          <span className="glow-text rainbow-text">✨ Sheik Irfan ✨</span>
+        </div>
+      )}
+
       <ul className="nav-links">
         {!user ? (
           <>

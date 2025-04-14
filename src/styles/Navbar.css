@@ -1,3 +1,58 @@
+.dropdown {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ff8a00, #e52e71);
+  padding: 10px 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  z-index: 999;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.rainbow-text {
+  background: linear-gradient(90deg, #ff00cc, #3333ff, #00ffcc, #ffff00, #ff00cc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow 3s linear infinite;
+}
+
+@keyframes rainbow {
+  0% { background-position: 0% }
+  100% { background-position: 100% }
+}
+
+.dropdown {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #ff6ec4, #7873f5);
+  color: white;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+}
+
+.glow-text {
+  animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff00de, 0 0 30px #ff00de;
+  }
+  to {
+    text-shadow: 0 0 10px #fff, 0 0 20px #00f0ff, 0 0 30px #00f0ff, 0 0 40px #00f0ff;
+  }
+}
 .navbar {
   background-color: #0a0a23;
   padding: 1rem 2rem;

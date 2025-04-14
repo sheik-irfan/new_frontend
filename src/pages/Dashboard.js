@@ -7,9 +7,10 @@ import "../styles/Dashboard.css";
 
 const API_URL = "http://localhost:1212/api";
 
-const Dashboard = ({ token, userId, onLogout }) => {
+const Dashboard = ({ token, userId, userRole, onLogout }) => {
   const [flights, setFlights] = useState([]);
   const [wallet, setWallet] = useState(null);
+  const [walletLoading, setWalletLoading] = useState(true);
 
   const fetchFlights = async () => {
     try {
@@ -23,14 +24,46 @@ const Dashboard = ({ token, userId, onLogout }) => {
   };
 
   const fetchWallet = async () => {
-    if (!userId) return;
+    if (!userId || userRole !== "CUSTOMER") return;
+
     try {
       const res = await axios.get(`${API_URL}/wallets/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWallet(res.data);
     } catch (err) {
-      console.error("Failed to fetch wallet", err);
+      console.warn("Wallet not found, attempting to create...");
+      await createWallet(); // Try to create if not found
+    } finally {
+      setWalletLoading(false);
+    }
+  };
+
+  const createWallet = async () => {
+    try {
+      const res = await axios.post(
+        `${API_URL}/wallets/create?userId=${userId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setWallet(res.data);
+    } catch (err) {
+      console.error("Failed to create wallet", err);
+    }
+  };
+
+  const topUpWallet = async (amount) => {
+    try {
+      await axios.post(
+        `${API_URL}/wallet/add`,
+        { userId, amount },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchWallet(); // Refresh balance
+      alert("Wallet topped up successfully!");
+    } catch (err) {
+      alert("Top-up failed");
+      console.error(err);
     }
   };
 
@@ -47,24 +80,10 @@ const Dashboard = ({ token, userId, onLogout }) => {
     }
   };
 
-  const topUpWallet = async (amount) => {
-    try {
-      await axios.post(
-        `${API_URL}/wallets/topup`,
-        { userId, amount },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      fetchWallet();
-      alert("Wallet topped up successfully!");
-    } catch (err) {
-      alert("Top-up failed");
-    }
-  };
-
   useEffect(() => {
     fetchFlights();
     fetchWallet();
-  }, []);
+  }, [userId, token, userRole]);
 
   return (
     <motion.div
@@ -118,15 +137,23 @@ const Dashboard = ({ token, userId, onLogout }) => {
           ))}
         </ul>
 
-        <h2>💰 Wallet</h2>
-        {wallet ? (
-          <p className="wallet-balance">Balance: ₹{wallet.balance.toLocaleString()}</p>
-        ) : (
-          <button onClick={fetchWallet}>Load Wallet</button>
+        {userRole === "CUSTOMER" && (
+          <>
+            <h2>💰 Wallet</h2>
+            {walletLoading ? (
+              <p>Loading wallet...</p>
+            ) : wallet ? (
+              <>
+                <p className="wallet-balance">Balance: ₹{wallet.balance.toLocaleString()}</p>
+                <div>
+                  <button onClick={() => topUpWallet(1000)}>Top Up ₹1000</button>
+                </div>
+              </>
+            ) : (
+              <p className="wallet-balance">❌ Wallet unavailable.</p>
+            )}
+          </>
         )}
-        <div>
-          <button onClick={() => topUpWallet(1000)}>Top Up ₹1000</button>
-        </div>
       </main>
     </motion.div>
   );

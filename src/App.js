@@ -12,10 +12,15 @@ import Airplanes from "./pages/Airplanes";
 import Airports from "./pages/Airports";
 import BookingHistoryPage from "./pages/BookingHistoryPage";
 import AdminDashboard from "./pages/AdminDashboard";
-
+import AdminAirplanes from "./pages/AdminAirplanes";
 import "animate.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AdminFlights from "./pages/AdminFlights";
+import AdminAirports from "./pages/AdminAirports";
+import AdminUsers from "./pages/AdminUsers";
+import BookingPage from "./pages/BookingPage";
+import "./App.css";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -84,9 +89,25 @@ function App() {
         />
 
         {/* Shared pages */}
-        <Route path="/wallet" element={<Wallet token={token} userId={user?.userId} />} />
+        <Route path="/adminflights" element={<AdminFlights token={token} userId={user?.userId} />} />
+        <Route
+
+path="/wallet"
+element={
+  user?.userRole === "CUSTOMER" ? (
+    <Wallet token={token} userId={user?.userId} userRole={user?.userRole} />
+  ) : (
+    <p className="animate__animated animate__shakeX">❌ Access Denied</p>
+  )
+}/>
+
+
         <Route path="/airports" element={<Airports token={token} />} />
         <Route path="/airplanes" element={<Airplanes token={token} />} />
+        <Route path ="adminairplanes" element={<AdminAirplanes token={token} />} />
+        <Route path="/adminairports" element={<AdminAirports token={token} />} />
+        <Route path="/adminusers" element={<AdminUsers token={token} />} />
+        <Route path="/booking" element={<BookingPage />} />
         <Route path="/flights" element={<FlightPage token={token} userId={user?.userId} />} />
         <Route path="/bookings" element={<BookingHistoryPage token={token} userId={user?.userId} />} />
       </Routes>

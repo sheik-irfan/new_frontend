@@ -1,18 +1,17 @@
-// src/pages/AdminDashboard.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/AdminDashboard.css";
 import "animate.css";
-
+ 
 const API_URL = "http://localhost:1212/api";
-
+ 
 const AdminDashboard = ({ token }) => {
   const [flights, setFlights] = useState([]);
   const [airplanes, setAirplanes] = useState([]);
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-
+ 
   useEffect(() => {
     if (!token) {
       navigate("/login");
@@ -22,7 +21,7 @@ const AdminDashboard = ({ token }) => {
       fetchUsers();
     }
   }, [token, navigate]);
-
+ 
   const fetchFlights = async () => {
     try {
       const res = await axios.get(`${API_URL}/flights`, {
@@ -33,7 +32,7 @@ const AdminDashboard = ({ token }) => {
       console.error("Failed to fetch flights", err);
     }
   };
-
+ 
   const fetchAirplanes = async () => {
     try {
       const res = await axios.get(`${API_URL}/airplanes`, {
@@ -44,7 +43,7 @@ const AdminDashboard = ({ token }) => {
       console.error("Failed to fetch airplanes", err);
     }
   };
-
+ 
   const fetchUsers = async () => {
     try {
       const res = await axios.get(`${API_URL}/users`, {
@@ -55,30 +54,31 @@ const AdminDashboard = ({ token }) => {
       console.error("Failed to fetch users", err);
     }
   };
-
+ 
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
   };
-
+ 
   return (
     <div className="admin-dashboard animate__animated animate__fadeIn">
       <aside className="admin-sidebar animate__animated animate__fadeInLeft">
         <h2>Admin Panel</h2>
         <ul>
           <li><Link to="/dashboard">🏠 Main Dashboard</Link></li>
-          <li><Link to="/flights">✈️ Manage Flights</Link></li>
-          <li><Link to="/airplanes">🛬 Manage Airplanes</Link></li>
-          <li><Link to="/airports">🛫 Manage Airports</Link></li>
+          <li><Link to="/adminflights">✈️ Manage Flights</Link></li>
+          <li><Link to ="/adminairplanes" >🛫 Manage Airplanes</Link></li>
+          <li><Link to="/adminairports">🛫 Manage Airports</Link></li>
+          <li><Link to="/adminusers">👥 Manage Users</Link></li>
           <li><Link to="/wallet">💰 Wallets</Link></li>
           <li><Link to="/bookings">📄 Bookings</Link></li>
           <li><button className="admin-logout" onClick={handleLogout}>🚪 Logout</button></li>
         </ul>
       </aside>
-
+ 
       <main className="admin-main">
         <h1 className="animate__animated animate__fadeInDown">🛠 Admin Dashboard</h1>
-
+ 
         <div className="admin-section">
           <h3>All Flights</h3>
           {flights.map((flight) => (
@@ -89,7 +89,7 @@ const AdminDashboard = ({ token }) => {
             </div>
           ))}
         </div>
-
+ 
         <div className="admin-section">
           <h3>All Airplanes</h3>
           {airplanes.map((plane) => (
@@ -100,7 +100,7 @@ const AdminDashboard = ({ token }) => {
             </div>
           ))}
         </div>
-
+ 
         <div className="admin-section">
           <h3>All Users</h3>
           {users.map((user) => (
@@ -115,5 +115,5 @@ const AdminDashboard = ({ token }) => {
     </div>
   );
 };
-
+ 
 export default AdminDashboard;

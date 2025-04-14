@@ -38,4 +38,65 @@
     margin-top: 1rem;
     font-weight: bold;
   }
+  .spinner {
+    margin: 1rem auto;
+    border: 6px solid #eee;
+    border-top: 6px solid #007bff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .top-up-section {
+    margin-top: 20px;
+  }
+  
+  .top-up-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .top-up-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .top-up-input-group input {
+    width: 150px;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  .top-up-input-group button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    transition: background 0.2s ease;
+  }
+  
+  .top-up-input-group .refresh-btn {
+    background-color: #28a745;
+  }
+  
+  .top-up-input-group button:hover {
+    background-color: #0056b3;
+  }
+  
+  .top-up-input-group .refresh-btn:hover {
+    background-color: #218838;
+  }
   

@@ -17,9 +17,7 @@ const HomePage = () => {
   };
 
   const handleSearch = () => {
-    // In real app: pass search params to flight search route or API
-    alert(`Searching: ${JSON.stringify(search, null, 2)}`);
-    navigate("/flights");
+    navigate("/dashboard", { state: { search } });
   };
 
   return (
