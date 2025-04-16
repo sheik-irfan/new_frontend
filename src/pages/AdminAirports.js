@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "../styles/AdminAirport.css";
  
  
 const API_URL = "http://localhost:1212/api";
@@ -159,4 +160,3 @@ const AdminAirports = ({ token }) => {
 };
  
 export default AdminAirports;
- 

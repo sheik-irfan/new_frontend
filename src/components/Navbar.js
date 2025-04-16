@@ -72,13 +72,14 @@ const Navbar = ({ user, onLogout }) => {
       <ul className="nav-links">
         {!user ? (
           <>
-            <li><Link to="/login">🔐 Login</Link></li>
-            <li><Link to="/register">📝 Register</Link></li>
+            <li><Link to="/login"> Login</Link></li>
+            <li><Link to="/register"> Register</Link></li>
+            <li><Link to="/about"> About Us</Link></li>
           </>
         ) : (
           <>
             <li className="user-info">👤 {user.userEmail}</li>
-            <li><button onClick={handleLogout} className="logout-btn">🚪 Logout</button></li>
+            <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
           </>
         )}
       </ul>

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import AboutUs from "./pages/AboutUs";
 import LoginPage from "./pages/LoginPage";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
@@ -64,6 +65,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/about" element={<AboutUs />} />
 
         {/* Role-based Routing */}
         <Route

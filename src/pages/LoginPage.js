@@ -1,4 +1,3 @@
-// src/pages/LoginPage.js
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -41,14 +40,14 @@ const LoginPage = ({ onLogin }) => {
         sessionStorage.setItem("user", JSON.stringify(user));
       }
 
-      // 🔁 Correct parameter order: token, then user
+      //  Correct parameter order: token, then user
       onLogin(token, user);
 
-      // Navigate to respective dashboard
+      //  Navigate based on user role
       if (role === "CUSTOMER") {
-        navigate("/dashboard");
+        navigate("/dashboard"); //  Customer goes to customer dashboard Page
       } else if (role === "ADMIN") {
-        navigate("/admin");
+        navigate("/admin"); //  Admin goes to Admin Dashboard
       } else {
         setError("Access denied: Unrecognized role.");
       }

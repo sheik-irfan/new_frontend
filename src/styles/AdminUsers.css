@@ -1,0 +1,120 @@
+/* Animations */
+@keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Main container */
+  .admin-users-container {
+    padding: 3rem 4rem;
+    background: linear-gradient(135deg, #d0f0ff, #fdfdfd);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    animation: fadeIn 0.8s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Heading */
+  .admin-users-container h2 {
+    font-size: 2.8rem;
+    color: #023e8a;
+    margin-bottom: 2.5rem;
+    animation: fadeInUp 0.6s ease;
+    text-align: center;
+  }
+  
+  /* Search Bar */
+  .search-bar {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 2.5rem;
+  }
+  
+  .search-bar input {
+    width: 100%;
+    max-width: 500px;
+    padding: 1rem 1.4rem;
+    border: 1px solid #90e0ef;
+    border-radius: 0.8rem;
+    outline: none;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 12px rgba(0, 119, 182, 0.1);
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+  
+  .search-bar input:focus {
+    border-color: #00b4d8;
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.2);
+  }
+  
+  /* Users List */
+  .users-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 800px;
+    animation: fadeInUp 0.7s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .users-list li {
+    background-color: #ffffffee;
+    border-radius: 1.2rem;
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 5px 25px rgba(0, 119, 182, 0.15);
+    font-size: 1.4rem;
+    color: #333;
+    animation: fadeInUp 0.6s ease;
+    transition: transform 0.3s ease;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .users-list li:hover {
+    transform: scale(1.02);
+    background-color: #e0f7ff;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .admin-users-container {
+      padding: 2rem 1.5rem;
+    }
+  
+    .admin-users-container h2 {
+      font-size: 2rem;
+    }
+  
+    .search-bar input {
+      font-size: 1rem;
+    }
+  
+    .users-list li {
+      font-size: 1.1rem;
+      padding: 1.5rem 1rem;
+    }
+  }
+  

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "../styles/AdminUsers.css";
  
  
 const API_URL = "http://localhost:1212/api";
@@ -38,7 +39,7 @@ const AdminUsers = ({ token }) => {
  
   return (
     <div className="admin-users-container">
-      <h2>👥 Manage Users</h2>
+      <h2> Manage Users</h2>
  
       <div className="search-bar">
         <input

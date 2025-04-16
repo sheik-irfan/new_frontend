@@ -1,17 +1,20 @@
 // src/pages/Dashboard.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // ✅ Import useNavigate
 import { motion } from "framer-motion";
 import "../styles/Dashboard.css";
 
 const API_URL = "http://localhost:1212/api";
 
-const Dashboard = ({ token, userId, userRole, onLogout }) => {
+const Dashboard = ({ token, userId, userRole }) => {
   const [flights, setFlights] = useState([]);
   const [wallet, setWallet] = useState(null);
   const [walletLoading, setWalletLoading] = useState(true);
 
+  const navigate = useNavigate(); // ✅ Initialize navigation hook
+
+  // Fetch all available flights
   const fetchFlights = async () => {
     try {
       const res = await axios.get(`${API_URL}/flights`, {
@@ -23,6 +26,7 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
     }
   };
 
+  // Fetch wallet for customer role
   const fetchWallet = async () => {
     if (!userId || userRole !== "CUSTOMER") return;
 
@@ -33,12 +37,13 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
       setWallet(res.data);
     } catch (err) {
       console.warn("Wallet not found, attempting to create...");
-      await createWallet(); // Try to create if not found
+      await createWallet();
     } finally {
       setWalletLoading(false);
     }
   };
 
+  // Create a new wallet if not exists
   const createWallet = async () => {
     try {
       const res = await axios.post(
@@ -52,6 +57,7 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
     }
   };
 
+  // Add amount to wallet
   const topUpWallet = async (amount) => {
     try {
       await axios.post(
@@ -59,7 +65,7 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
         { userId, amount },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchWallet(); // Refresh balance
+      fetchWallet(); // Refresh wallet balance
       alert("Wallet topped up successfully!");
     } catch (err) {
       alert("Top-up failed");
@@ -67,17 +73,9 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
     }
   };
 
-  const bookFlight = async (flightId) => {
-    try {
-      await axios.post(
-        `${API_URL}/bookings`,
-        { userId, flightId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert("Flight booked successfully!");
-    } catch (err) {
-      alert("Booking failed");
-    }
+  // Handle Book button click — navigate to booking page with flight info
+  const handleBookClick = (flight) => {
+    navigate("/book", { state: { flight, userId, token } }); // ✅ Pass flight info using router state
   };
 
   useEffect(() => {
@@ -96,12 +94,8 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
         <h2>Dashboard</h2>
         <nav>
           <ul>
-            <li><Link to="/flights">✈️ View Flights</Link></li>
-            <li><Link to="/airports">🛫 Airports</Link></li>
-            <li><Link to="/airplanes">🛬 Airplanes</Link></li>
-            <li><Link to="/wallet">💰 Wallet</Link></li>
-            <li><Link to="/bookings">📄 Booking History</Link></li>
-            <li><button className="logout-btn" onClick={onLogout}>🚪 Logout</button></li>
+            <li><Link to="/wallet"> Wallet</Link></li>
+            <li><Link to="/bookings">Booking History</Link></li>
           </ul>
         </nav>
       </aside>
@@ -120,7 +114,7 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          ✈️ Available Flights
+          Available Flights
         </motion.h2>
 
         <ul className="flight-list">
@@ -132,14 +126,15 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
               transition={{ delay: idx * 0.1 }}
             >
               {flight.flightNumber} — {flight.source} → {flight.destination} on {flight.departureDate}
-              <button onClick={() => bookFlight(flight.flightId)}>Book</button>
+              {/* ✅ Book button now navigates to booking page */}
+              <button onClick={() => handleBookClick(flight)}>Book</button>
             </motion.li>
           ))}
         </ul>
 
         {userRole === "CUSTOMER" && (
           <>
-            <h2>💰 Wallet</h2>
+            <h2>Wallet</h2>
             {walletLoading ? (
               <p>Loading wallet...</p>
             ) : wallet ? (
@@ -150,7 +145,7 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
                 </div>
               </>
             ) : (
-              <p className="wallet-balance">❌ Wallet unavailable.</p>
+              <p className="wallet-balance">Wallet unavailable.</p>
             )}
           </>
         )}

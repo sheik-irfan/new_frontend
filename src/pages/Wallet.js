@@ -63,7 +63,7 @@ const Wallet = ({ token, userId, userRole }) => {
 
   return (
     <div className="wallet-container">
-      <h2>💰 Your Wallet</h2>
+      <h2>Your Wallet</h2>
       {wallet ? (
         <>
           <p>Current Balance: ₹{wallet.balance.toLocaleString()}</p>

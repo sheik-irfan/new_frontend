@@ -1,0 +1,204 @@
+/* Animations */
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Container */
+  .admin-airplanes-container {
+    max-width: 100%;
+    margin: auto;
+    padding: 4rem 2rem;
+    background: linear-gradient(145deg, #e3f2fd, #fdfdfd);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    animation: fadeIn 0.7s ease-in-out;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  /* Heading */
+  .admin-airplanes-container h2 {
+    text-align: center;
+    font-size: 3rem;
+    color: #023e8a;
+    font-weight: bold;
+    margin-bottom: 3rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    animation: slideUp 0.5s ease;
+  }
+  
+  /* Add Airplane Form */
+  .add-airplane-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    animation: slideUp 0.6s ease-in-out;
+  }
+  
+  .add-airplane-form input {
+    padding: 1rem;
+    border-radius: 0.7rem;
+    border: 1px solid #90e0ef;
+    font-size: 1.1rem;
+    transition: 0.3s ease;
+    background-color: #f0f9ff;
+    box-shadow: 0 4px 8px rgba(0, 119, 182, 0.1);
+  }
+  
+  .add-airplane-form input:focus {
+    border-color: #00b4d8;
+    box-shadow: 0 0 6px rgba(0, 180, 216, 0.2);
+    outline: none;
+  }
+  
+  .add-airplane-form button {
+    grid-column: span 2;
+    padding: 1rem;
+    background-color: #00b4d8;
+    color: white;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 119, 182, 0.1);
+  }
+  
+  .add-airplane-form button:hover {
+    background-color: #0096c7;
+    box-shadow: 0 4px 15px rgba(0, 119, 182, 0.15);
+  }
+  
+  .add-airplane-form button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 180, 216, 0.3);
+  }
+  
+  /* Airplane List */
+  .airplanes-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    animation: slideUp 0.7s ease-in-out;
+  }
+  
+  .airplanes-list li {
+    background-color: #ffffff;
+    padding: 1.6rem 1.8rem;
+    margin-bottom: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 16px rgba(0, 119, 182, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    color: #333;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    gap: 1rem;
+  }
+  
+  .airplanes-list li:hover {
+    transform: scale(1.02);
+    background-color: #e0f7ff;
+  }
+  
+  .airplanes-list li span {
+    flex: 1;
+    text-align: left;
+    font-weight: 500;
+  }
+  
+  .airplanes-list li .airplane-info {
+    flex: 2;
+    font-size: 1.1rem;
+    color: #555;
+  }
+  
+  /* Button Group */
+  .airplanes-list li .button-group {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  
+  /* Buttons */
+  .airplanes-list button {
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+  
+  .airplanes-list button:first-of-type {
+    background-color: #48cae4;
+    color: white;
+  }
+  
+  .airplanes-list button:first-of-type:hover {
+    background-color: #00b4d8;
+    transform: scale(1.05);
+  }
+  
+  .airplanes-list button:last-of-type {
+    background-color: #ff6b6b;
+    color: white;
+  }
+  
+  .airplanes-list button:last-of-type:hover {
+    background-color: #d00000;
+    transform: scale(1.05);
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .admin-airplanes-container {
+      padding: 3rem 1.5rem;
+    }
+  
+    .add-airplane-form {
+      grid-template-columns: 1fr;
+    }
+  
+    .add-airplane-form button {
+      grid-column: span 1;
+    }
+  
+    .airplanes-list li {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  
+    .airplanes-list li .button-group {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  
+    .airplanes-list button {
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+    }
+  }
+  

@@ -1,68 +1,225 @@
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Container */
 .admin-flights-container {
-    padding: 2rem;
-    background-color: #f8f9fa;
-    min-height: 100vh;
-    font-family: Arial, sans-serif;
+  max-width: 100%;
+  margin: auto;
+  padding: 4rem 3rem;
+  background: linear-gradient(145deg, #e3f2fd, #fdfdfd);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation: fadeIn 0.7s ease-in-out;
+  border-radius: 12px;
+  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Header */
+.admin-flights-container h2 {
+  text-align: center;
+  font-size: 3rem;
+  color: #023e8a;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  animation: slideUp 0.6s ease-out;
+}
+
+/* Add Flight Form */
+.add-flight-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  animation: slideUp 0.7s ease-in-out;
+}
+
+.add-flight-form input {
+  padding: 1.2rem;
+  border-radius: 0.8rem;
+  border: 1px solid #90e0ef;
+  font-size: 1.1rem;
+  background-color: #f0f9ff;
+  box-shadow: 0 6px 15px rgba(0, 119, 182, 0.1);
+  transition: all 0.3s ease;
+}
+
+.add-flight-form input:focus {
+  border-color: #00b4d8;
+  box-shadow: 0 0 8px rgba(0, 180, 216, 0.3);
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.add-flight-form button {
+  grid-column: span 2;
+  padding: 1.2rem;
+  background-color: #00b4d8;
+  color: white;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 6px 15px rgba(0, 119, 182, 0.1);
+}
+
+.add-flight-form button:hover {
+  background-color: #0096c7;
+  transform: translateY(-2px);
+}
+
+.add-flight-form .cancel-btn {
+  background-color: #ff6b6b;
+  color: white;
+  font-size: 1rem;
+  padding: 1.2rem;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 6px 15px rgba(0, 119, 182, 0.1);
+}
+
+.add-flight-form .cancel-btn:hover {
+  background-color: #d00000;
+  transform: translateY(-2px);
+}
+
+/* Flights List */
+.flights-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  animation: slideUp 0.7s ease-in-out;
+}
+
+.flights-list li {
+  background-color: #ffffff;
+  padding: 1.8rem 2rem;
+  margin-bottom: 1.8rem;
+  border-radius: 1.2rem;
+  box-shadow: 0 6px 20px rgba(0, 119, 182, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  color: #333;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  gap: 1rem;
+}
+
+.flights-list li:hover {
+  transform: scale(1.02);
+  background-color: #e0f7ff;
+}
+
+.flights-list li span {
+  flex: 1;
+  text-align: left;
+  font-weight: 500;
+}
+
+.flights-list li .flight-info {
+  flex: 2;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* Action Buttons */
+.flights-list .action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.flights-list button {
+  padding: 0.8rem 1.3rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.7rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 119, 182, 0.1);
+}
+
+.flights-list button:first-of-type {
+  background-color: #48cae4;
+  color: white;
+}
+
+.flights-list button:first-of-type:hover {
+  background-color: #00b4d8;
+  transform: translateY(-2px);
+}
+
+.flights-list button:last-of-type {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.flights-list button:last-of-type:hover {
+  background-color: #d00000;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-flights-container {
+    padding: 3rem 1.5rem;
   }
-  
-  .admin-flights-container h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  
+
   .add-flight-form {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.5rem;
+    grid-template-columns: 1fr;
   }
-  
-  .add-flight-form input {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    flex: 1 1 150px;
-  }
-  
+
   .add-flight-form button {
-    padding: 0.5rem 1rem;
-    background-color: #0069d9;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    grid-column: span 1;
   }
-  
-  .add-flight-form button:hover {
-    background-color: #0053b3;
-  }
-  
-  .flights-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
+
   .flights-list li {
-    background: #ffffff;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
-    border-radius: 6px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
   }
-  
+
+  .flights-list li .action-buttons {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
   .flights-list button {
-    background-color: #dc3545;
-    border: none;
-    padding: 0.4rem 0.75rem;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
   }
-  
-  .flights-list button:hover {
-    background-color: #bd2130;
-  }
-  
+}

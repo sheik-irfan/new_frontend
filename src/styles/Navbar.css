@@ -1,97 +1,246 @@
-.dropdown {
-  position: absolute;
-  top: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg, #ff8a00, #e52e71);
-  padding: 10px 20px;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  z-index: 999;
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: bold;
-  pointer-events: none;
-}
-
-.rainbow-text {
-  background: linear-gradient(90deg, #ff00cc, #3333ff, #00ffcc, #ffff00, #ff00cc);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: rainbow 3s linear infinite;
-}
-
-@keyframes rainbow {
-  0% { background-position: 0% }
-  100% { background-position: 100% }
-}
-
-.dropdown {
-  position: absolute;
-  top: 60px;
-  left: 10px;
-  padding: 10px 20px;
-  background: linear-gradient(135deg, #ff6ec4, #7873f5);
-  color: white;
-  border-radius: 10px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  z-index: 100;
-}
-
-.glow-text {
-  animation: glow 1.5s infinite alternate;
-}
-
-@keyframes glow {
-  from {
-    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff00de, 0 0 30px #ff00de;
-  }
-  to {
-    text-shadow: 0 0 10px #fff, 0 0 20px #00f0ff, 0 0 30px #00f0ff, 0 0 40px #00f0ff;
-  }
-}
+/* Base Navbar - Sleek & Semi-Transparent */
 .navbar {
-  background-color: #0a0a23;
-  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  padding: 0.75rem 5%;
+  background: rgba(10, 25, 47, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: sticky; /* Changed to sticky to make the navbar stick to the top */
+  top: 0; /* Stick to the top of the screen */
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 65px;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.navbar .logo {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #61dafb;
-  text-decoration: none;
-}
-
-.nav-links {
-  list-style: none;
+/* Logo - Glowing on Hover */
+.logo {
   display: flex;
-  gap: 1.5rem;
   align-items: center;
+  height: 100%;
 }
 
-.nav-links a,
-.logout-btn {
-  color: #fff;
+.logo a {
+  font-size: 1.6rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #64f3ff, #4facfe);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  transition: all 0.4s ease;
+  text-shadow: 0 0 2px rgba(100, 243, 255, 0.6);
+  animation: floatLogo 3s ease-in-out infinite alternate;
+}
+
+.logo a:hover {
+  background: linear-gradient(90deg, #ff6ec4, #7873f5, #64f3ff);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 16px rgba(100, 243, 255, 0.9);
+  animation: glowLogo 1.5s ease-in-out infinite alternate;
+}
+
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.nav-links li {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  position: relative;
+}
+
+.nav-links li a {
+  color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
-  font-size: 1.1rem;
-  transition: color 0.3s ease;
-  background: none;
-  border: none;
-  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 0.5rem;
 }
 
-.nav-links a:hover,
+.nav-links li a:hover {
+  color: #64f3ff;
+}
+
+.nav-links li a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0.5rem;
+  right: 0.5rem;
+  height: 2px;
+  background: #64f3ff;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.nav-links li a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* User Info */
+.user-info {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+  padding: 0 0.5rem;
+}
+
+/* Logout Button */
+.logout-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  height: 80%;
+}
+
 .logout-btn:hover {
-  color: #61dafb;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Dropdown */
+.dropdown {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 25, 47, 0.98);
+  padding: 1rem 2rem;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-top: 2px solid #64f3ff;
+  z-index: 1001;
+  text-align: center;
+  min-width: 250px;
+}
+
+.glow-text {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 0 8px rgba(100, 243, 255, 0.7);
+}
+
+.rainbow-text {
+  background: linear-gradient(to right, #ff4d4d, #f9cb28, #64f3ff, #4facfe);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 300% 300%;
+  animation: rainbow 3s ease infinite;
+}
+
+/* Animations */
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes glowLogo {
+  from {
+    text-shadow: 0 0 8px rgba(100, 243, 255, 0.6);
+  }
+  to {
+    text-shadow: 0 0 16px rgba(100, 243, 255, 0.9);
+  }
+}
+
+@keyframes floatLogo {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-2px);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.75rem 5%;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 56px;
+  }
+
+  .logo {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .nav-links li {
+    height: 40px;
+  }
+
+  .dropdown {
+    top: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-links {
+    gap: 0.5rem;
+  }
+
+  .nav-links li a {
+    font-size: 0.9rem;
+    padding: 0 0.3rem;
+  }
+
+  .logout-btn {
+    padding: 0.3rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .dropdown {
+    min-width: 200px;
+    padding: 0.8rem 1rem;
+  }
+
+  .glow-text {
+    font-size: 1.1rem;
+  }
 }
