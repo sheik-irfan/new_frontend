@@ -17,7 +17,7 @@
 
 .hero-section {
   position: relative;
-  height: 82vh;
+  height: 100vh;
   background-size: cover;
   background-position: center;
   background-color: transparent; /* Remove fallback gray background */
