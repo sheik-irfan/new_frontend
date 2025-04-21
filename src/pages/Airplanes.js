@@ -1,36 +1,36 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-
-const API_URL = "http://localhost:1212/api";
+import { fetchAirplanes } from "../services/airplaneService";
 
 const Airplanes = ({ token }) => {
   const [airplanes, setAirplanes] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchAirplanes = async () => {
+    const loadAirplanes = async () => {
       try {
-        const res = await axios.get(`${API_URL}/airplanes`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setAirplanes(res.data);
+        const data = await fetchAirplanes(token);
+        setAirplanes(data);
       } catch (err) {
-        console.error("Failed to fetch airplanes", err);
+        console.error("Failed to load airplanes:", err);
         setError("❌ Failed to load airplanes. Please try again.");
       }
     };
 
-    fetchAirplanes();
+    loadAirplanes();
   }, [token]);
 
   return (
     <div style={{ padding: "2rem" }}>
       <h2>🛬 Airplanes</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {airplanes.length === 0 && !error && <p>Loading airplanes...</p>}
+
       <ul>
         {airplanes.map((airplane) => (
-          <li key={airplane.id}>
-            <strong>{airplane.name}</strong> ({airplane.model}) — {airplane.manufacturer}, Capacity: {airplane.capacity}
+          <li key={airplane.airplaneNumber}>
+            <strong>{airplane.airplaneName}</strong> ({airplane.airplaneModel}) —{" "}
+            {airplane.manufacturer}, Capacity: {airplane.capacity}
           </li>
         ))}
       </ul>

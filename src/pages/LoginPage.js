@@ -1,9 +1,9 @@
-// src/pages/LoginPage.js
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/LoginPage.css"; // optional CSS
 import "animate.css";
+import { jwtDecode } from "jwt-decode";
 
 const API_URL = "http://localhost:1212/api";
 
@@ -19,6 +19,7 @@ const LoginPage = ({ onLogin }) => {
     setError("");
 
     try {
+      // Send login request to backend
       const res = await axios.post(`${API_URL}/login`, {
         userEmail,
         userPassword,
@@ -26,31 +27,35 @@ const LoginPage = ({ onLogin }) => {
 
       const { token, role, id } = res.data;
 
-      const user = {
-        userEmail,
-        userRole: role,
-        userId: id,
-      };
-
-      // Save to local or session storage
-      if (rememberMe) {
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
-      } else {
-        sessionStorage.setItem("token", token);
-        sessionStorage.setItem("user", JSON.stringify(user));
+      // Decode JWT token and get user details
+      let user;
+      try {
+        const decoded = jwtDecode(token);
+        user = {
+          userEmail: decoded.sub || userEmail, // Use email from decoded token if available
+          userRole: decoded.role || role,
+          userId: decoded.userId || id,
+        };
+      } catch (err) {
+        console.error("JWT decode error:", err);
+        setError("❌ Failed to decode JWT token.");
+        return;
       }
 
-      // 🔁 Correct parameter order: token, then user
+      // Always store token in localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // Pass token and user details to parent component (e.g. App.js)
       onLogin(token, user);
 
-      // Navigate to respective dashboard
+      // Redirect user based on their role
       if (role === "CUSTOMER") {
         navigate("/dashboard");
       } else if (role === "ADMIN") {
         navigate("/admin");
       } else {
-        setError("Access denied: Unrecognized role.");
+        setError("❌ Access denied: Unrecognized role.");
       }
     } catch (err) {
       console.error("Login error:", err);

@@ -1,94 +1,92 @@
+// src/pages/FlightPage.js
+
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
-import "../styles/FlightPage.css";
 
-const API_URL = "http://localhost:1212/api";
+const API_URL = "http://localhost:1212/api/flights";
 
-const Flights = ({ token }) => {
+const FlightPage = ({ token }) => {
+  const location = useLocation();
   const [flights, setFlights] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortOption, setSortOption] = useState("");
+  const [error, setError] = useState("");
 
-  const fetchFlights = async () => {
+  const searchResults = location.state?.searchResults || null;
+  const searchCriteria = location.state?.searchCriteria || null;
+
+  useEffect(() => {
+    if (searchResults) {
+      setFlights(searchResults);
+    } else {
+      fetchAllFlights();
+    }
+  }, []);
+
+  const fetchAllFlights = async () => {
     try {
-      const res = await axios.get(`${API_URL}/flights`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await axios.get(API_URL, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       setFlights(res.data);
     } catch (err) {
       console.error("Failed to fetch flights", err);
+      setError("❌ Could not load flights.");
     }
   };
-
-  useEffect(() => {
-    fetchFlights();
-  }, []);
-
-  const filteredFlights = flights.filter((flight) => {
-    const term = searchTerm.toLowerCase();
-    return (
-      flight.flightNumber.toLowerCase().includes(term) ||
-      flight.source.toLowerCase().includes(term) ||
-      flight.destination.toLowerCase().includes(term)
-    );
-  });
-
-  const sortFlights = (flights) => {
-    const sorted = [...flights];
-    switch (sortOption) {
-      case "priceAsc":
-        return sorted.sort((a, b) => a.price - b.price);
-      case "priceDesc":
-        return sorted.sort((a, b) => b.price - a.price);
-      case "dateAsc":
-        return sorted.sort((a, b) => new Date(a.departureDate) - new Date(b.departureDate));
-      case "dateDesc":
-        return sorted.sort((a, b) => new Date(b.departureDate) - new Date(a.departureDate));
-      default:
-        return sorted;
-    }
-  };
-
-  const displayedFlights = sortFlights(filteredFlights);
 
   return (
-    <div className="admin-flights-container">
-      <h2>📋 All Flights </h2>
-
-      <div className="filter-bar">
-        <input
-          type="text"
-          placeholder="🔍 Search by number, source or destination"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-
-        <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
-          <option value="">Sort By</option>
-          <option value="priceAsc">💸 Price: Low to High</option>
-          <option value="priceDesc">💰 Price: High to Low</option>
-          <option value="dateAsc">📆 Date: Soonest First</option>
-          <option value="dateDesc">📅 Date: Latest First</option>
-        </select>
-      </div>
-
-      {displayedFlights.length === 0 ? (
-        <p className="no-flights">No flights found.</p>
-      ) : (
-        <ul className="flights-list">
-          {displayedFlights.map((flight) => (
-            <li key={flight.flightId} className="flight-card">
-              <strong>✈️ {flight.flightNumber}</strong> — {flight.source} → {flight.destination}
-              <br />
-              🗓 {flight.departureDate} | 🕐 {flight.departureTime} → {flight.arrivalTime}
-              <br />
-              💺 Airplane ID: {flight.airplaneId} | 💰 ₹{flight.price}
-            </li>
-          ))}
-        </ul>
+    <div style={{ padding: "2rem" }}>
+      <h2>✈️ {searchResults ? "Search Results" : "All Available Flights"}</h2>
+      {searchCriteria && (
+        <p style={{ marginBottom: "1rem", fontStyle: "italic" }}>
+          Showing flights from <strong>{searchCriteria.source?.name || "Any"}</strong> to{" "}
+          <strong>{searchCriteria.destination?.name || "Any"}</strong> on{" "}
+          <strong>{searchCriteria.date || "Any Date"}</strong>
+        </p>
       )}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <thead>
+          <tr style={{ backgroundColor: "#f2f2f2" }}>
+            <th style={cellStyle}>Airline</th>
+            <th style={cellStyle}>From</th>
+            <th style={cellStyle}>To</th>
+            <th style={cellStyle}>Departure</th>
+            <th style={cellStyle}>Arrival</th>
+            <th style={cellStyle}>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {flights.map((flight) => (
+            <tr key={flight.id}>
+              <td style={cellStyle}>{flight.airline}</td>
+              <td style={cellStyle}>
+                {flight.fromAirportName || flight.departureAirportName}
+              </td>
+              <td style={cellStyle}>
+                {flight.toAirportName || flight.arrivalAirportName}
+              </td>
+              <td style={cellStyle}>
+                {new Date(flight.departureTime).toLocaleString()}
+              </td>
+              <td style={cellStyle}>
+                {new Date(flight.arrivalTime).toLocaleString()}
+              </td>
+              <td style={cellStyle}>
+                ₹{flight.price.toLocaleString("en-IN")}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default Flights;
+const cellStyle = {
+  border: "1px solid #ccc",
+  padding: "10px",
+  textAlign: "center",
+};
+
+export default FlightPage;

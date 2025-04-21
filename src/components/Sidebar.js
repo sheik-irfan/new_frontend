@@ -1,13 +1,44 @@
 // src/components/Sidebar.js
-import React from "react";
-import "./Sidebar.css";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import "./Sidebar.css"; // Optional: Add your sidebar styles here
 
-const Sidebar = ({ onLogout }) => {
+const Sidebar = ({ collapsed, setCollapsed, onLogout }) => {
+  const location = useLocation();
+
   return (
-    <div className="sidebar">
-      <h3>Navigation</h3>
-      <button onClick={onLogout}>Logout</button>
-    </div>
+    <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
+      <div className="sidebar-header">
+        <h2>{!collapsed ? "Dashboard" : "🧭"}</h2>
+        <button className="toggle-btn" onClick={() => setCollapsed(!collapsed)}>
+          {collapsed ? "➡️" : "⬅️"}
+        </button>
+      </div>
+      <nav>
+        <ul>
+          <li onClick={() => setCollapsed(true)}>
+            <Link to="/flights">{collapsed ? "✈️" : "✈️ View Flights"}</Link>
+          </li>
+          <li onClick={() => setCollapsed(true)}>
+            <Link to="/airports">{collapsed ? "🛫" : "🛫 Airports"}</Link>
+          </li>
+          <li onClick={() => setCollapsed(true)}>
+            <Link to="/airplanes">{collapsed ? "🛬" : "🛬 Airplanes"}</Link>
+          </li>
+          <li onClick={() => setCollapsed(true)}>
+            <Link to="/wallet">{collapsed ? "💰" : "💰 Wallet"}</Link>
+          </li>
+          <li onClick={() => setCollapsed(true)}>
+            <Link to="/bookings">{collapsed ? "📄" : "📄 Bookings"}</Link>
+          </li>
+          <li>
+            <button className="logout-btn" onClick={onLogout}>
+              {collapsed ? "🚪" : "🚪 Logout"}
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </aside>
   );
 };
 

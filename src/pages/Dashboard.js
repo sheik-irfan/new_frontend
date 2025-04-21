@@ -1,8 +1,8 @@
-// src/pages/Dashboard.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import Sidebar from "../components/Sidebar";
 import "../styles/Dashboard.css";
 
 const API_URL = "http://localhost:1212/api";
@@ -11,18 +11,13 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
   const [flights, setFlights] = useState([]);
   const [wallet, setWallet] = useState(null);
   const [walletLoading, setWalletLoading] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
 
-  const fetchFlights = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/flights`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setFlights(res.data);
-    } catch (err) {
-      console.error("Failed to fetch flights", err);
-    }
-  };
+  // Check if search results are passed from the HomePage via location state
+  const searchResults = location.state?.searchResults;
 
+  // Fetch wallet data for customers
   const fetchWallet = async () => {
     if (!userId || userRole !== "CUSTOMER") return;
 
@@ -31,9 +26,8 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWallet(res.data);
-    } catch (err) {
-      console.warn("Wallet not found, attempting to create...");
-      await createWallet(); // Try to create if not found
+    } catch {
+      await createWallet();
     } finally {
       setWalletLoading(false);
     }
@@ -59,11 +53,10 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
         { userId, amount },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchWallet(); // Refresh balance
+      fetchWallet();
       alert("Wallet topped up successfully!");
-    } catch (err) {
+    } catch {
       alert("Top-up failed");
-      console.error(err);
     }
   };
 
@@ -75,36 +68,27 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("Flight booked successfully!");
-    } catch (err) {
+    } catch {
       alert("Booking failed");
     }
   };
 
   useEffect(() => {
-    fetchFlights();
     fetchWallet();
-  }, [userId, token, userRole]);
+  }, []);
+
+  useEffect(() => {
+    if (!collapsed) {
+      const timeout = setTimeout(() => {
+        setCollapsed(true);
+      }, 500);
+      return () => clearTimeout(timeout);
+    }
+  }, [location]);
 
   return (
-    <motion.div
-      className="dashboard-container"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-    >
-      <aside className="sidebar">
-        <h2>Dashboard</h2>
-        <nav>
-          <ul>
-            <li><Link to="/flights">✈️ View Flights</Link></li>
-            <li><Link to="/airports">🛫 Airports</Link></li>
-            <li><Link to="/airplanes">🛬 Airplanes</Link></li>
-            <li><Link to="/wallet">💰 Wallet</Link></li>
-            <li><Link to="/bookings">📄 Booking History</Link></li>
-            <li><button className="logout-btn" onClick={onLogout}>🚪 Logout</button></li>
-          </ul>
-        </nav>
-      </aside>
+    <div className="dashboard-wrapper">
+      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} onLogout={onLogout} />
 
       <main className="dashboard-main">
         <motion.h1
@@ -123,20 +107,27 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
           ✈️ Available Flights
         </motion.h2>
 
-        <ul className="flight-list">
-          {flights.map((flight, idx) => (
-            <motion.li
-              key={flight.flightId}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-            >
-              {flight.flightNumber} — {flight.source} → {flight.destination} on {flight.departureDate}
-              <button onClick={() => bookFlight(flight.flightId)}>Book</button>
-            </motion.li>
-          ))}
-        </ul>
+        {/* Display flights passed from HomePage or fetched from API */}
+        {searchResults?.length > 0 ? (
+          <ul className="flight-list">
+            {searchResults.map((flight, idx) => (
+              <motion.li
+                key={flight.flightId}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+              >
+                {flight.flightNumber} — {flight.source} → {flight.destination} on{" "}
+                {new Date(flight.departureDate).toLocaleDateString()}
+                <button onClick={() => bookFlight(flight.flightId)}>Book</button>
+              </motion.li>
+            ))}
+          </ul>
+        ) : (
+          <p>No flights available for your search.</p>
+        )}
 
+        {/* Display wallet section if the user is a customer */}
         {userRole === "CUSTOMER" && (
           <>
             <h2>💰 Wallet</h2>
@@ -145,9 +136,7 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
             ) : wallet ? (
               <>
                 <p className="wallet-balance">Balance: ₹{wallet.balance.toLocaleString()}</p>
-                <div>
-                  <button onClick={() => topUpWallet(1000)}>Top Up ₹1000</button>
-                </div>
+                <button onClick={() => topUpWallet(1000)}>Top Up ₹1000</button>
               </>
             ) : (
               <p className="wallet-balance">❌ Wallet unavailable.</p>
@@ -155,7 +144,7 @@ const Dashboard = ({ token, userId, userRole, onLogout }) => {
           </>
         )}
       </main>
-    </motion.div>
+    </div>
   );
 };
 

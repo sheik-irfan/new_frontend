@@ -1,40 +1,183 @@
+/* Background Variants */
+.hero-section.bg1 {
+  background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=2070&q=80');
+}
+.hero-section.bg2 {
+  background-image: url('https://images.unsplash.com/photo-1556388158-158ea5ccacbd?auto=format&fit=crop&w=2070&q=80');
+}
+.hero-section.bg3 {
+  background-image: url('https://images.unsplash.com/photo-1529074963764-98f45c47344b?auto=format&fit=crop&w=2070&q=80');
+}
+.hero-section.bg4 {
+  background-image: url('https://images.unsplash.com/photo-1499678329028-101435549a4e?auto=format&fit=crop&w=2070&q=80');
+}
+.hero-section.bg5 {
+  background-image: url('https://images.unsplash.com/photo-1556388158-703bd7a01c6e?auto=format&fit=crop&w=2070&q=80');
+}
+
+.hero-section {
+  position: relative;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: white;
+  padding: 40px;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 0;
+}
+
+.hero-content {
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.hero-text-left h1,
+.hero-text-right h1 {
+  font-size: 48px;
+  margin: 0;
+}
+
+.hero-tagline {
+  display: flex;
+  gap: 10px;
+  font-size: 22px;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.hero-subtitle {
+  z-index: 1;
+  margin-top: 30px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.search-form-container {
+  z-index: 1;
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
 .search-box {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 30px;
-    animation: fadeIn 1s ease-in-out;
-  }
-  
-  .search-box input,
-  .search-box select {
-    padding: 12px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    width: 220px;
-    transition: border-color 0.3s;
-  }
-  
-  .search-box input:focus,
-  .search-box select:focus {
-    border-color: #00796b;
-    outline: none;
-  }
-  
-  .search-box button {
-    padding: 12px 24px;
-    background-color: #00796b;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: transform 0.3s, background-color 0.3s;
-  }
-  
-  .search-box button:hover {
-    background-color: #004d40;
-    transform: scale(1.05);
-  }
-  
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px 30px;
+  border-radius: 12px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.input-group {
+  position: relative;
+}
+
+.input-group input,
+.input-group select {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  min-width: 160px;
+}
+
+.input-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+button {
+  padding: 12px 20px;
+  background-color: #1d3557;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+button:hover {
+  background-color: #457b9d;
+}
+
+.scroll-indicator {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 18px;
+  animation: \ 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.content-section {
+  padding: 60px 20px;
+  background: #f8f9fa;
+  text-align: center;
+}
+
+.quote-container {
+  font-size: 20px;
+  margin-bottom: 40px;
+}
+
+.quote-author {
+  font-size: 16px;
+  color: #555;
+}
+
+.features-section {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.feature-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  width: 250px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.airline-partners {
+  margin-top: 60px;
+}
+
+.airline-logos {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.airline-logos img {
+  height: 40px;
+}

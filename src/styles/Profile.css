@@ -1,0 +1,22 @@
+.profile-container {
+    padding: 2rem;
+    max-width: 500px;
+    margin: auto;
+  }
+  
+  .profile-details p {
+    margin: 0.5rem 0;
+  }
+  
+  input {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+  }
+  
+  button {
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+  

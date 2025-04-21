@@ -1,161 +1,141 @@
-/* src/styles/LoginPage.css */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #d0f0ff, #fdfdfd);
+}
+ 
+/* Centering the login box */
 .auth-container {
-    max-width: 400px;
-    margin: 4rem auto;
-    padding: 2rem;
-    background: #f0f4ff;
-    border-radius: 16px;
-    box-shadow: 0 0 24px rgba(0, 0, 0, 0.1);
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 400px;
+  margin: 5rem auto;
+  padding: 3rem 2.5rem;
+  background-color: #ffffffcc;
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  animation: fadeInScale 0.6s ease-in-out;
+}
+ 
+/* Title */
+.auth-container h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  color: #0077b6;
+  text-shadow: 0 2px 4px rgba(0, 119, 182, 0.1);
+}
+.login-form{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+ 
+/* Input Fields */
+.login-form input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1.2rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.75rem;
+  background-color: #f7f9fc;
+  transition: 0.3s ease all;
+}
+ 
+.login-form input:focus {
+  border-color: #0077b6;
+  box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.15);
+  outline: none;
+}
+ 
+/* Remember me */
+.remember-me {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+ 
+}
+ 
+.remember-me input {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+ 
+/* Login Button */
+.btn-login {
+  width: 100%;
+  padding: 0.9rem;
+  background: linear-gradient(to right, #0077b6, #00b4d8);
+  color: white;
+  font-size: 1.05rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 119, 182, 0.25);
+}
+ 
+.btn-login:hover {
+  background: linear-gradient(to right, #00b4d8, #0077b6);
+  transform: translateY(-2px);
+}
+ 
+.btn-login:active {
+  transform: scale(0.98);
+}
+ 
+/* Error Message */
+.error {
+  color: #d32f2f;
+  margin-top: 1rem;
+  font-weight: bold;
+  animation: shakeError 0.5s;
+}
+ 
+/* Animation Keyframes */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(30px);
   }
-  
-  .auth-form input {
-    width: 100%;
-    padding: 0.75rem;
-    margin: 0.75rem 0;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
-  
-  .auth-form .remember-label {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .login-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    font-size: 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .login-btn:hover {
-    background-color: #0056b3;
-  }
-  
-  .error {
-    color: red;
-    margin-top: 1rem;
-    font-weight: bold;
-  }
-  
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 4rem 1rem;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #e0f7fa, #fff);
-  }
-  
-  .login-form {
-    background-color: #fff;
-    border-radius: 1rem;
-    padding: 2rem;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.5s ease-in-out;
-  }
-  
-  .login-form h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    font-weight: bold;
-    color: #0077b6;
-  }
-  
-  .login-form input[type="email"],
-  .login-form input[type="password"] {
-    width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
-    transition: border 0.3s ease;
-  }
-  
-  .login-form input:focus {
-    border-color: #0077b6;
-    outline: none;
-  }
-  
-  .login-form .remember-label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-  }
-  
-  .login-form .remember-label input {
-    margin-right: 0.5rem;
-  }
-  
-  .login-form button {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #0077b6;
-    color: white;
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .login-form button:hover {
-    background-color: #005f8f;
-  }
+}
+ 
+@keyframes shakeError {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+ 
+/* Responsive Design */
+@media (max-width: 480px) {
   .auth-container {
-    max-width: 400px;
-    margin: 5rem auto;
+    margin: 3rem 1rem;
     padding: 2rem;
-    background: #fff;
-    border-radius: 1rem;
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
-    text-align: center;
   }
-  
-  .login-form input {
-    width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid #ccc;
+ 
+  .auth-container h2 {
+    font-size: 1.7rem;
   }
-  
+ 
   .btn-login {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-weight: bold;
+    font-size: 1rem;
   }
-  
-  .btn-login:hover {
-    background-color: #0056b3;
-  }
-  
-  .error {
-    color: red;
-    margin-top: 1rem;
-  }
-  
-  .remember-me {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    justify-content: flex-start;
-  }
-  
+}
+ 

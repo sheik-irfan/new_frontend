@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
- 
- 
+import "../styles/AdminAirports.css"; // Assuming you have a CSS file for styling
+
 const API_URL = "http://localhost:1212/api";
- 
+
 const AdminAirports = ({ token }) => {
   const [airports, setAirports] = useState([]);
   const [filteredAirports, setFilteredAirports] = useState([]);
@@ -15,8 +15,8 @@ const AdminAirports = ({ token }) => {
     airportState: "",
     airportCountry: "",
   });
-  const [editingId, setEditingId] = useState(null);
- 
+  const [editingCode, setEditingCode] = useState(null); // Store airport code for editing
+
   const fetchAirports = async () => {
     try {
       const res = await axios.get(`${API_URL}/airports`, {
@@ -28,14 +28,15 @@ const AdminAirports = ({ token }) => {
       console.error("Failed to fetch airports", err);
     }
   };
- 
+
   const handleAddOrUpdateAirport = async () => {
     try {
-      if (editingId) {
-        await axios.put(`${API_URL}/airports/${editingId}`, newAirport, {
+      if (editingCode) {
+        // Use airportCode (e.g., LAX) in the PUT request URL
+        await axios.put(`${API_URL}/airports/${editingCode}`, newAirport, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setEditingId(null);
+        setEditingCode(null); // Reset editing code after update
       } else {
         await axios.post(`${API_URL}/airports`, newAirport, {
           headers: { Authorization: `Bearer ${token}` },
@@ -53,10 +54,10 @@ const AdminAirports = ({ token }) => {
       alert("Failed to save airport");
     }
   };
- 
-  const handleDeleteAirport = async (id) => {
+
+  const handleDeleteAirport = async (code) => {
     try {
-      await axios.delete(`${API_URL}/airports/${id}`, {
+      await axios.delete(`${API_URL}/airports/${code}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchAirports();
@@ -64,12 +65,12 @@ const AdminAirports = ({ token }) => {
       alert("Failed to delete airport");
     }
   };
- 
+
   const handleEditAirport = (airport) => {
     setNewAirport(airport);
-    setEditingId(airport.airportId);
+    setEditingCode(airport.airportCode); // Set airportCode for editing
   };
- 
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     const filtered = airports.filter((airport) =>
@@ -80,15 +81,15 @@ const AdminAirports = ({ token }) => {
     );
     setFilteredAirports(filtered);
   };
- 
+
   useEffect(() => {
     fetchAirports();
   }, []);
- 
+
   return (
     <div className="admin-airports-container">
       <h2>Manage Airports</h2>
- 
+
       <div className="search-bar">
         <input
           type="text"
@@ -97,7 +98,7 @@ const AdminAirports = ({ token }) => {
           onChange={(e) => handleSearch(e.target.value)}
         />
       </div>
- 
+
       <div className="add-airport-form">
         <input
           type="text"
@@ -140,23 +141,22 @@ const AdminAirports = ({ token }) => {
           }
         />
         <button onClick={handleAddOrUpdateAirport}>
-          {editingId ? "Update Airport" : "Add Airport"}
+          {editingCode ? "Update Airport" : "Add Airport"}
         </button>
       </div>
- 
+
       <ul className="airports-list">
         {filteredAirports.map((airport) => (
-          <li key={airport.airportId}>
+          <li key={airport.airportCode}>
             🛫 {airport.airportName} ({airport.airportCode}) - {airport.airportCity},{" "}
             {airport.airportState}, {airport.airportCountry}
             <button onClick={() => handleEditAirport(airport)}>✏️ Edit</button>
-            <button onClick={() => handleDeleteAirport(airport.airportId)}>🗑 Delete</button>
+            <button onClick={() => handleDeleteAirport(airport.airportCode)}>🗑 Delete</button>
           </li>
         ))}
       </ul>
     </div>
   );
 };
- 
+
 export default AdminAirports;
- 

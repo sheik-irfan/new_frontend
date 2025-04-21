@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import confetti from "canvas-confetti";
 import "animate.css";
@@ -6,68 +6,71 @@ import "../styles/Navbar.css";
 
 const Navbar = ({ user, onLogout }) => {
   const navigate = useNavigate();
+  const [clicks, setClicks] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [animationClass, setAnimationClass] = useState("animate__fadeInDown");
-  const clickCountRef = useRef(0);
   const clickTimeoutRef = useRef(null);
   const hideTimeoutRef = useRef(null);
 
-  const handleLogoClick = () => {
-    clickCountRef.current++;
-
-    if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
-
-    clickTimeoutRef.current = setTimeout(() => {
-      clickCountRef.current = 0;
-    }, 500); // 500ms reset
-
-    if (clickCountRef.current >= 3) {
-      triggerDropdown();
-      clickCountRef.current = 0;
-    }
-  };
-
-  const triggerDropdown = () => {
-    setShowDropdown(true);
-    setAnimationClass("animate__fadeInDown");
-
-    // Fire confetti
-    confetti({
-      particleCount: 150,
-      spread: 90,
-      origin: { y: 0.6 },
-    });
-
-    // Play sound
-    const audio = new Audio("https://www.myinstants.com/media/sounds/yeah-boy.mp3");
-    audio.play();
-
-    // Auto-hide after 3 seconds with fade out
-    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-    hideTimeoutRef.current = setTimeout(() => {
-      setAnimationClass("animate__fadeOutUp");
-      setTimeout(() => {
-        setShowDropdown(false);
-      }, 500); // wait for fade out to finish
-    }, 3000);
-  };
+  // const audioRef = useRef(new Audio("/sounds/pop.mp3"));
 
   const handleLogout = () => {
     onLogout();
     navigate("/");
   };
 
+  const handleLogoClick = () => {
+    setClicks(prev => prev + 1);
+    clearTimeout(clickTimeoutRef.current);
+
+    clickTimeoutRef.current = setTimeout(() => {
+      setClicks(0);
+    }, 600);
+  };
+
+  useEffect(() => {
+    if (clicks === 3) {
+      setClicks(0);
+      setShowDropdown(true);
+
+      // Play sound
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(() => {});
+
+      // Trigger confetti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
+
+      // Hide dropdown after 3s
+      clearTimeout(hideTimeoutRef.current);
+      hideTimeoutRef.current = setTimeout(() => {
+        hideTimeoutRef.current = setTimeout(() => {
+          console.log("Hiding dropdown now...");
+          setShowDropdown(false);
+        }, 300);
+        
+        setShowDropdown(false);
+      }, 300);
+    }
+
+    return () => {
+      clearTimeout(clickTimeoutRef.current);
+      clearTimeout(hideTimeoutRef.current);
+    };
+  }, [clicks]);
+
   return (
     <nav className="navbar animate__animated animate__fadeInDown">
       <div className="logo" onClick={handleLogoClick}>
         <Link to="/">🛫 FlyFast</Link>
+        {showDropdown && (
+          <div className="dropdown animate__animated animate__fadeInDown">
+            <span className="glow-text">✨ Sheik Irfan ✨</span>
+          </div>
+        )}
       </div>
-
-      {showDropdown && (
-        <div className={`dropdown animate__animated ${animationClass}`}>
-          <span className="glow-text rainbow-text">✨ Sheik Irfan ✨</span>
-        </div>
-      )}
 
       <ul className="nav-links">
         {!user ? (

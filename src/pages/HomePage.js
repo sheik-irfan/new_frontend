@@ -1,59 +1,166 @@
 // src/pages/HomePage.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import AirportAutocomplete from "../pages/AirportAutocomplete";
 import "../styles/HomePage.css";
+
+const API_URL = "http://localhost:1212/api";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState({
-    source: "",
-    destination: "",
+    source: null,
+    destination: null,
     date: "",
     tripType: "",
   });
+  const [allFlights, setAllFlights] = useState([]);
+  const [filteredFlights, setFilteredFlights] = useState([]);
+  const [airports, setAirports] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const backgrounds = ["bg1", "bg2", "bg3", "bg4", "bg5"];
+  const quotes = [
+    { text: "The world is a book, and those who do not travel read only a page", author: "Saint Augustine" },
+    { text: "Travel makes one modest. You see what a tiny place you occupy in the world", author: "Gustave Flaubert" },
+    { text: "Life is either a daring adventure or nothing at all", author: "Helen Keller" },
+    { text: "We travel not to escape life, but for life not to escape us", author: "Anonymous" },
+    { text: "Adventure is worthwhile", author: "Aesop" },
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % quotes.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    fetchAllFlights();
+  }, []);
+
+  const fetchAllFlights = async () => {
+    try {
+      const res = await fetch(`${API_URL}/flights`);
+      const text = await res.text();
+
+      if (!text.trim().startsWith("{") && !text.trim().startsWith("[")) {
+        throw new Error("Unexpected response: not JSON");
+      }
+
+      const data = JSON.parse(text);
+      setAllFlights(data);
+    } catch (err) {
+      console.error("Error loading all flights:", err);
+    }
+  };
+
+  const handleAirportSelect = (value, type) => {
+    setSearch({ ...search, [type]: value });
+  };
 
   const handleChange = (e) => {
     setSearch({ ...search, [e.target.name]: e.target.value });
   };
 
+  const fetchAirports = async (query) => {
+    try {
+      const response = await fetch(`${API_URL}/airports/search?query=${query}`);
+      const data = await response.json();
+      setAirports(data);
+    } catch (error) {
+      console.error("Error fetching airports:", error.message);
+    }
+  };
+
   const handleSearch = () => {
-    navigate("/dashboard", { state: { search } });
+    const { source, destination, date } = search;
+
+    const filtered = allFlights.filter((flight) => {
+      const matchSource = source ? flight.sourceId === source.id : true;
+      const matchDestination = destination ? flight.destinationId === destination.id : true;
+      const matchDate = date ? flight.departureTime.startsWith(date) : true;
+
+      return matchSource && matchDestination && matchDate;
+    });
+
+    navigate("/flights", {
+      state: {
+        searchResults: filtered,
+        searchCriteria: search,
+      },
+    });
   };
 
   return (
-    <div className="home-container">
-      <h1 className="home-heading">Find Your Next Adventure</h1>
-      <p className="home-subheading">Book flights easily with our smart platform</p>
+    <div className="home-page">
+      <div className={`hero-section ${backgrounds[currentIndex]}`}>
+        <div className="hero-overlay"></div>
+        <div className="hero-content">
+          <div className="hero-text-left">
+            <h1>Elevate Your</h1>
+            <div className="hero-tagline">
+              <span>PREMIUM</span>
+              <span>EFFICIENT</span>
+            </div>
+          </div>
 
-      <div className="search-box">
-        <input
-          type="text"
-          name="source"
-          placeholder="From (Source)"
-          value={search.source}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="destination"
-          placeholder="To (Destination)"
-          value={search.destination}
-          onChange={handleChange}
-        />
-        <input
-          type="date"
-          name="date"
-          value={search.date}
-          onChange={handleChange}
-        />
-        <select name="tripType" value={search.tripType} onChange={handleChange}>
-          <option value="">Trip Type (Optional)</option>
-          <option value="one-way">One Way</option>
-          <option value="round-trip">Round Trip</option>
-        </select>
-        <button className="animated-button" onClick={handleSearch}>
-          Search Flights
-        </button>
+          <div className="hero-text-right">
+            <h1>Travel Experience</h1>
+            <div className="hero-tagline">
+              <span>RELIABLE</span>
+              <span>SERVICE</span>
+            </div>
+          </div>
+        </div>
+
+        <p className="hero-subtitle">Premium flight bookings with effortless convenience</p>
+
+        <div className="search-form-container">
+          <div className="search-box">
+            <div className="input-group">
+              <AirportAutocomplete
+                label="From"
+                onSelect={(val) => handleAirportSelect(val, "source")}
+                onSearch={fetchAirports}
+                airports={airports}
+              />
+            </div>
+            <div className="input-group">
+              <AirportAutocomplete
+                label="To"
+                onSelect={(val) => handleAirportSelect(val, "destination")}
+                onSearch={fetchAirports}
+                airports={airports}
+              />
+            </div>
+            <div className="input-group">
+              <input
+                type="date"
+                name="date"
+                value={search.date}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="input-group">
+              <select name="tripType" value={search.tripType} onChange={handleChange}>
+                <option value="">Trip Type</option>
+                <option value="one-way">One Way</option>
+                <option value="round-trip">Round Trip</option>
+              </select>
+            </div>
+            <button onClick={handleSearch}>
+              Search Flights <span className="button-icon">🔍</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="content-section">
+        <div className="quote-container">
+          <p className="travel-quote">"{quotes[currentIndex].text}"</p>
+          <p className="quote-author">- {quotes[currentIndex].author}</p>
+        </div>
       </div>
     </div>
   );
