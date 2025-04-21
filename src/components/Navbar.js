@@ -78,7 +78,7 @@ const Navbar = ({ user, onLogout }) => {
           </>
         ) : (
           <>
-            <li className="user-info">👤 {user.userEmail}</li>
+            <li className="user-info">👤 {user.userEmail.split('@')[0]}</li>
             <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
           </>
         )}

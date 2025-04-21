@@ -1,7 +1,6 @@
-// src/pages/Dashboard.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom"; // ✅ Import useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import "../styles/Dashboard.css";
 
@@ -11,10 +10,9 @@ const Dashboard = ({ token, userId, userRole }) => {
   const [flights, setFlights] = useState([]);
   const [wallet, setWallet] = useState(null);
   const [walletLoading, setWalletLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const navigate = useNavigate();
 
-  const navigate = useNavigate(); // ✅ Initialize navigation hook
-
-  // Fetch all available flights
   const fetchFlights = async () => {
     try {
       const res = await axios.get(`${API_URL}/flights`, {
@@ -26,7 +24,6 @@ const Dashboard = ({ token, userId, userRole }) => {
     }
   };
 
-  // Fetch wallet for customer role
   const fetchWallet = async () => {
     if (!userId || userRole !== "CUSTOMER") return;
 
@@ -43,7 +40,6 @@ const Dashboard = ({ token, userId, userRole }) => {
     }
   };
 
-  // Create a new wallet if not exists
   const createWallet = async () => {
     try {
       const res = await axios.post(
@@ -57,7 +53,6 @@ const Dashboard = ({ token, userId, userRole }) => {
     }
   };
 
-  // Add amount to wallet
   const topUpWallet = async (amount) => {
     try {
       await axios.post(
@@ -65,7 +60,7 @@ const Dashboard = ({ token, userId, userRole }) => {
         { userId, amount },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchWallet(); // Refresh wallet balance
+      fetchWallet();
       alert("Wallet topped up successfully!");
     } catch (err) {
       alert("Top-up failed");
@@ -73,9 +68,8 @@ const Dashboard = ({ token, userId, userRole }) => {
     }
   };
 
-  // Handle Book button click — navigate to booking page with flight info
   const handleBookClick = (flight) => {
-    navigate("/book", { state: { flight, userId, token } }); // ✅ Pass flight info using router state
+    navigate("/book", { state: { flight, userId, token } });
   };
 
   useEffect(() => {
@@ -85,27 +79,31 @@ const Dashboard = ({ token, userId, userRole }) => {
 
   return (
     <motion.div
-      className="dashboard-container"
+      className={`dashboard-container ${sidebarOpen ? "sidebar-open" : ""}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-    >
-      <aside className="sidebar">
+      >
+      {/* Sidebar */}
+      <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
+        <div className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+        {sidebarOpen ? "❮" : "❯"}     {/* {sidebarOpen ? "✕" : "≡"} */}
+        </div>
         <h2>Dashboard</h2>
-        <nav>
-          <ul>
-            <li><Link to="/wallet"> Wallet</Link></li>
-            <li><Link to="/bookings">Booking History</Link></li>
-          </ul>
-        </nav>
+        <ul>
+          <li><Link to="/wallet">Wallet</Link></li>
+          <li><Link to="/bookings">Booking History</Link></li>
+        </ul>
       </aside>
 
+      {/* Main Content */}
       <main className="dashboard-main">
         <motion.h1
+          className="animate__animated animate__fadeInDown"
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6 }}
-        >
+          >
           Welcome to Your Flight Dashboard
         </motion.h1>
 
@@ -113,7 +111,7 @@ const Dashboard = ({ token, userId, userRole }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-        >
+          >
           Available Flights
         </motion.h2>
 
@@ -121,17 +119,51 @@ const Dashboard = ({ token, userId, userRole }) => {
           {flights.map((flight, idx) => (
             <motion.li
               key={flight.flightId}
+              className="flight-card"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
-            >
-              {flight.flightNumber} — {flight.source} → {flight.destination} on {flight.departureDate}
-              {/* ✅ Book button now navigates to booking page */}
-              <button onClick={() => handleBookClick(flight)}>Book</button>
+              >
+              <div className="flight-meta">
+                <div className="flight-date">Date: {flight.departureDate}</div>
+                <div className="airline-info">
+                  <span className="airline">{flight.airline}</span>
+                  <span className="flight-number">({flight.flightNumber})</span>
+                </div>
+              </div>
+              <div className="flight-times">
+                <div className="flight-block">
+                  <div className="time">{flight.departureTime}</div>
+                  <div className="airport-code">{flight.source}</div>
+                </div>
+                <div className="flight-middle">
+                  <div className="duration">{flight.duration}</div>
+                  <div className="flight-path">
+                    <div className="line" />
+                    <div className="plane-icon">✈</div>
+                    <div className="line" />
+                  </div>
+                  <div className="flight-type">Direct</div>
+                </div>
+                <div className="flight-block">
+                  <div className="time">{flight.arrivalTime}</div>
+                  <div className="airport-code">{flight.destination}</div>
+                </div>
+              </div>
+              <div className="flight-bottom">
+                <div className="price-block">
+                  <div className="label">Fare</div>
+                  <div className="price">₹{flight.price?.toLocaleString()}</div>
+                </div>
+                <button className="book-button" onClick={() => handleBookClick(flight)}>
+                  Book Now →
+                </button>
+              </div>
             </motion.li>
           ))}
         </ul>
 
+        {/* Wallet Section */}
         {userRole === "CUSTOMER" && (
           <>
             <h2>Wallet</h2>

@@ -10,6 +10,7 @@ const AdminDashboard = ({ token }) => {
   const [flights, setFlights] = useState([]);
   const [airplanes, setAirplanes] = useState([]);
   const [users, setUsers] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,8 +57,12 @@ const AdminDashboard = ({ token }) => {
   };
 
   return (
-    <div className="admin-dashboard animate__animated animate__fadeIn">
-      <aside className="admin-sidebar animate__animated animate__fadeInLeft">
+    <div className={`admin-dashboard ${sidebarOpen ? "sidebar-open" : ""}`}>
+      {/* Sidebar */}
+      <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
+        <div className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          {sidebarOpen ? "❮" : "❯"}
+        </div>
         <h2>Admin Panel</h2>
         <ul>
           <li><Link to="/adminflights">Manage Flights</Link></li>
@@ -68,6 +73,7 @@ const AdminDashboard = ({ token }) => {
         </ul>
       </aside>
 
+      {/* Main */}
       <main className="admin-main">
         <h1 className="animate__animated animate__fadeInDown">Admin Dashboard</h1>
 
@@ -99,7 +105,7 @@ const AdminDashboard = ({ token }) => {
             <div key={user.userId} className="admin-card">
               <h4>{user.userName}</h4>
               <p>Email: {user.userEmail}</p>
-              <p>Role: {user.role}</p>
+              <p>Role: {user.userole}</p>
             </div>
           ))}
         </div>

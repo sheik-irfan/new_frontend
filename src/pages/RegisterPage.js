@@ -1,4 +1,3 @@
-// src/pages/RegisterPage.js
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -33,30 +32,28 @@ const RegisterPage = () => {
     setPasswordMatch(form.userPassword === value);
   };
 
-  const validatePassword = (password) => {
-    const hasNumber = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    return hasNumber && hasSpecialChar;
-  };
-
   const handleRegister = async () => {
     if (form.userPassword !== confirmPassword) {
       alert("Passwords do not match.");
       return;
     }
 
-    if (!validatePassword(form.userPassword)) {
-      alert("Password must contain at least one number and one special character.");
+    if (form.userPassword.length < 6) {
+      alert("Password must be at least 6 characters long.");
       return;
     }
 
     try {
-      await axios.post(`${API_URL}/register`, form);
+      console.log("Sending payload:", form);
+      const response = await axios.post(`${API_URL}/register`, form);
       alert("Registration successful! You can now login.");
       navigate("/login");
     } catch (err) {
-      alert("Registration failed. Please check the details.");
-      console.error(err);
+      console.error("Registration failed:", err.response?.data || err.message);
+      alert(
+        err.response?.data?.message ||
+        "Registration failed. Please check the details."
+      );
     }
   };
 

@@ -43,7 +43,7 @@
 /* Sidebar */
 .sidebar {
   width: 240px;
-  background-color: #ffffffcc;
+  background-color: #d0f0ff !important;
   backdrop-filter: blur(8px);
   padding: 2rem 1.5rem;
   border-right: 1px solid #e0e0e0;
@@ -52,6 +52,18 @@
   flex-direction: column;
   gap: 2rem;
   animation: slideInLeft 0.6s ease;
+  position: relative;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  color: #0077b6;
+}
+
+.sidebar.closed {
+  transform: translateX(-100%);
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
 }
 
 .sidebar h2 {
@@ -64,16 +76,24 @@
 .sidebar ul {
   list-style: none;
   padding: 0;
-  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.sidebar a,
-.sidebar button {
+/* ✅ Ensured list item and anchor tag both have proper color */
+.sidebar li {
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.6rem;
+  color: #0077b6 !important;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar li a {
   text-decoration: none;
-  color: #0077b6;
+  color: #0077b6 !important;
   font-weight: 500;
   background-color: transparent;
   border: none;
@@ -86,10 +106,32 @@
   width: 100%;
 }
 
-.sidebar a:hover,
-.sidebar button:hover {
+.sidebar li a:hover {
   background-color: #e0f7ff;
   color: #023e8a;
+}
+
+/* Toggle Button */
+.toggle-btn {
+  position: absolute;
+  top: 20px;
+  right: -20px;
+  width: 30px;
+  height: 30px;
+  background-color: #0077b6;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  z-index: 1001;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background-color: #023e8a;
 }
 
 /* Main Content */
@@ -105,85 +147,137 @@
   color: #023e8a;
   margin-bottom: 2rem;
   text-align: center;
-  animation: fadeIn 1s ease;
 }
 
 .dashboard-main h2 {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   color: #0077b6;
-  margin-bottom: 1.5rem;
-  animation: fadeIn 0.8s ease;
+  margin-bottom: 1rem;
 }
 
-/* Flight List Styling */
+/* Flight Cards */
 .flight-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 1.5rem;
+  margin-top: 1rem;
 }
 
-.flight-list li {
+.flight-card {
   background-color: #ffffffee;
   border-radius: 1rem;
   padding: 1.2rem 1.5rem;
   box-shadow: 0 5px 20px rgba(0, 119, 182, 0.15);
   transition: transform 0.3s ease;
   animation: fadeInUp 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.flight-list li:hover {
+.flight-card:hover {
   transform: scale(1.02);
 }
 
-.flight-list button {
-  font-size: 1rem;
+.flight-meta {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+}
+
+.airline-info {
+  color: #023e8a;
+}
+
+.flight-times {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.95rem;
+}
+
+.flight-block {
+  text-align: center;
+}
+
+.flight-middle {
+  text-align: center;
+}
+
+.flight-path {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.line {
+  flex: 1;
+  height: 2px;
+  background-color: #0077b6;
+  margin: 0 5px;
+}
+
+.plane-icon {
+  font-size: 1.2rem;
+}
+
+.flight-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price-block .label {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #023e8a;
+}
+
+.book-button {
   background-color: #0077b6;
   color: white;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.6rem;
   border: none;
+  border-radius: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.book-button:hover {
+  background-color: #023e8a;
+}
+
+/* Wallet */
+.wallet-balance {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #023e8a;
+  margin: 1rem 0;
+}
+
+.dashboard-main button {
+  background-color: #00b4d8;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.flight-list button:hover {
-  background-color: #00b4d8;
+.dashboard-main button:hover {
+  background-color: #0077b6;
 }
 
-/* Wallet Section */
-.wallet-balance {
-  font-size: 1.2rem;
-  color: #023e8a;
-  margin-bottom: 1rem;
-  animation: fadeInUp 0.7s ease;
-}
-
-.wallet-balance p {
-  font-size: 1rem;
-  color: #333;
-}
-
-/* Top-up and General Buttons */
-button {
-  font-size: 1rem;
-  background: linear-gradient(to right, #0077b6, #00b4d8);
-  color: white;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.6rem;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button:hover {
-  background: linear-gradient(to right, #00b4d8, #0077b6);
-  transform: translateY(-2px);
-}
-
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
   .dashboard-container {
     flex-direction: column;
@@ -197,6 +291,10 @@ button:hover {
     overflow-x: auto;
     padding: 1rem;
     gap: 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: auto;
   }
 
   .sidebar h2 {
@@ -209,6 +307,11 @@ button:hover {
   }
 
   .dashboard-main {
-    padding: 2rem 1.5rem;
+    padding: 6rem 1.5rem 2rem;
+  }
+
+  .toggle-btn {
+    top: 10px;
+    right: 10px;
   }
 }

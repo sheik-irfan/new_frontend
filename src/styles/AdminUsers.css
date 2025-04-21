@@ -77,6 +77,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    margin-left: 250px;
   }
   
   .users-list li {
@@ -91,6 +93,8 @@
     transition: transform 0.3s ease;
     text-align: center;
     width: 100%;
+   align-items: center;
+    justify-content: center;
   }
   
   .users-list li:hover {
@@ -117,4 +121,53 @@
       padding: 1.5rem 1rem;
     }
   }
+  /* Sidebar Animation */
+.admin-sidebar {
+  width: 240px;
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 1000;
+}
+
+.admin-sidebar.closed {
+  transform: translateX(-100%);
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+
+.admin-dashboard.sidebar-open .admin-main {
+   margin-left:auto;
+  transition: margin-left 0.3s ease;
+}
+
+.admin-dashboard .admin-main {
+  margin-left:100px;
+  transition: margin-left 0.3s ease;
+}
+
+/* Toggle Button */
+.toggle-btn {
+  position: absolute;
+  top: 20px;
+  right: -20px;
+  width: 30px;
+  height: 30px;
+  background-color: #0077b6;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  z-index: 1001;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background-color: #023e8a;
+}
+
   
