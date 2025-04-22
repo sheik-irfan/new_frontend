@@ -20,7 +20,7 @@ import AdminAirports from "./pages/AdminAirports";
 import AdminUsers from "./pages/AdminUsers";
 import BookingPage from "./pages/BookingPage";
 import "./App.css";
-import FlightSearchResults from "./pages/FlightSearchFrom";
+import FlightSearchPage from "./pages/FlightSearchPage";
 import Footer from "./components/Footer"; // Import Footer
 import ChatBox from "./components/ChatBox"; // Import ChatBox
 
@@ -96,9 +96,11 @@ function App() {
         <Route path="adminairplanes" element={<AdminAirplanes token={token} />} />
         <Route path="/adminairports" element={<AdminAirports token={token} />} />
         <Route path="/adminusers" element={<AdminUsers token={token} />} />
-        <Route path="/booking" element={<BookingPage />} />
+        <Route path="/booking/:flightId" element={<BookingPage />} />
+        <Route path="/flightsearch" element={<FlightSearchPage />} />
+        {/* <Route path="/flight/:flightId" element={<BookingPage token={token} userId={user?.userId} />} /> */}
         <Route path="/flights" element={<FlightPage token={token} userId={user?.userId} />} />
-        <Route path="/searchflights" element={<FlightSearchResults token={token} userId={user?.userId} />} />
+        {/* <Route path="/searchflights" element={<FlightSearchResults token={token} userId={user?.userId} />} /> */}
         <Route path="/bookings" element={<BookingHistoryPage token={token} userId={user?.userId} />} />
       </Routes>
 

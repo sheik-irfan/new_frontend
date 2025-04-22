@@ -8,28 +8,17 @@ const AdminFlights = ({ token }) => {
   const [flights, setFlights] = useState([]);
   const [airports, setAirports] = useState([]);
   const [airplanes, setAirplanes] = useState([]);
+  const [editingFlightId, setEditingFlightId] = useState(null);
   const [newFlight, setNewFlight] = useState({
     airline: "",
+    airplaneId: "",
     departureTime: "",
     arrivalTime: "",
     departureAirportId: "",
     arrivalAirportId: "",
-    price: "",
-    airplaneId: "",
+    price: ""
   });
-  const [editingFlightId, setEditingFlightId] = useState(null);
 
-  useEffect(() => {
-    if (!token) {
-      window.location.href = "/login";  // Redirect if no token
-    } else {
-      fetchFlights();
-      fetchAirports();
-      fetchAirplanes();
-    }
-  }, [token]);
-
-  // Fetch flights from the backend
   const fetchFlights = async () => {
     try {
       const res = await axios.get(`${API_URL}/flights`, {
@@ -41,7 +30,6 @@ const AdminFlights = ({ token }) => {
     }
   };
 
-  // Fetch airports
   const fetchAirports = async () => {
     try {
       const res = await axios.get(`${API_URL}/airports`, {
@@ -53,7 +41,6 @@ const AdminFlights = ({ token }) => {
     }
   };
 
-  // Fetch airplanes
   const fetchAirplanes = async () => {
     try {
       const res = await axios.get(`${API_URL}/airplanes`, {
@@ -65,93 +52,93 @@ const AdminFlights = ({ token }) => {
     }
   };
 
-  // Format date and time
-  const formatDateTime = (dateTime) => {
-    const options = {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    };
-    return new Date(dateTime).toLocaleString(undefined, options);
-  };
-
-  // Get airport name by ID
-  const getAirportNameById = (id) => {
-    const airport = airports.find((airport) => airport.id === id);
-    return airport ? airport.airportName : "Unknown Airport";
-  };
-
-  // Get airplane model by ID
-  const getAirplaneModelById = (id) => {
-    const airplane = airplanes.find((plane) => plane.airplaneId === id);
-    return airplane ? airplane.model : "Unknown Airplane";
-  };
-
-  // Handle input changes for flight
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewFlight((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  // Add a new flight
   const handleAddFlight = async () => {
     try {
-      await axios.post(`${API_URL}/flights`, newFlight, {
+      const flightToSend = {
+        ...newFlight,
+        airplaneId: parseInt(newFlight.airplaneId),
+        departureAirportId: parseInt(newFlight.departureAirportId),
+        arrivalAirportId: parseInt(newFlight.arrivalAirportId),
+        price: parseFloat(newFlight.price)
+      };
+
+      await axios.post(`${API_URL}/flights`, flightToSend, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      fetchFlights();  // Refresh the flights list
-      setNewFlight({
-        airline: "",
-        departureTime: "",
-        arrivalTime: "",
-        departureAirportId: "",
-        arrivalAirportId: "",
-        price: "",
-        airplaneId: "",
-      }); // Reset form after adding
+
+      fetchFlights();
+      resetForm();
     } catch (err) {
-      console.error("Failed to add flight", err);
+      alert("Failed to add flight");
     }
   };
 
-  // Edit an existing flight
-  const handleEditFlight = async () => {
+  const handleEditFlight = (flight) => {
+    setNewFlight({ ...flight });
+    setEditingFlightId(flight.id);
+  };
+
+  const handleUpdateFlight = async () => {
     try {
-      await axios.put(`${API_URL}/flights/${editingFlightId}`, newFlight, {
+      const updatedFlight = {
+        ...newFlight,
+        airplaneId: parseInt(newFlight.airplaneId),
+        departureAirportId: parseInt(newFlight.departureAirportId),
+        arrivalAirportId: parseInt(newFlight.arrivalAirportId),
+        price: parseFloat(newFlight.price)
+      };
+
+      await axios.put(`${API_URL}/flights/${editingFlightId}`, updatedFlight, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      fetchFlights();  // Refresh the flights list
-      setNewFlight({
-        airline: "",
-        departureTime: "",
-        arrivalTime: "",
-        departureAirportId: "",
-        arrivalAirportId: "",
-        price: "",
-        airplaneId: "",
-      });
-      setEditingFlightId(null);  // Reset editing mode
+
+      fetchFlights();
+      resetForm();
     } catch (err) {
-      console.error("Failed to update flight", err);
+      alert("Failed to update flight");
+      console.error(err);
     }
   };
 
-  // Delete a flight
   const handleDeleteFlight = async (id) => {
     try {
       await axios.delete(`${API_URL}/flights/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      fetchFlights();  // Refresh the flights list
+      fetchFlights();
     } catch (err) {
-      console.error("Failed to delete flight", err);
+      alert("Failed to delete flight");
     }
   };
+
+  const resetForm = () => {
+    setNewFlight({
+      airline: "",
+      airplaneId: "",
+      departureTime: "",
+      arrivalTime: "",
+      departureAirportId: "",
+      arrivalAirportId: "",
+      price: ""
+    });
+    setEditingFlightId(null);
+  };
+
+  const getAirportNameById = (id) => {
+    const airport = airports.find((a) => a.id === id);
+    return airport ? airport.airportName : "Unknown Airport";
+  };
+
+  const getAirplaneNameById = (id) => {
+    const airplane = airplanes.find((a) => a.airplaneId === id);
+    return airplane ? `${airplane.airplaneName} (${airplane.airplaneModel})` : "Unknown Airplane";
+  };
+
+  useEffect(() => {
+    fetchFlights();
+    fetchAirports();
+    fetchAirplanes();
+  }, []);
 
   return (
     <div className="admin-flights-container">
@@ -160,130 +147,101 @@ const AdminFlights = ({ token }) => {
       <div className="add-flight-form">
         <input
           type="text"
-          name="airline"
-          placeholder="Airline Name"
+          placeholder="Airline"
           value={newFlight.airline}
-          onChange={handleInputChange}
+          onChange={(e) => setNewFlight({ ...newFlight, airline: e.target.value })}
         />
-        <input
-          type="datetime-local"
-          name="departureTime"
-          placeholder="Departure Time"
-          value={newFlight.departureTime}
-          onChange={handleInputChange}
-        />
-        <input
-          type="datetime-local"
-          name="arrivalTime"
-          placeholder="Arrival Time"
-          value={newFlight.arrivalTime}
-          onChange={handleInputChange}
-        />
+
         <select
-          name="departureAirportId"
-          value={newFlight.departureAirportId}
-          onChange={handleInputChange}
-        >
-          <option value="">Select Departure Airport</option>
-          {airports.map((airport) => (
-            <option key={airport.id} value={airport.id}>
-              {airport.airportName}
-            </option>
-          ))}
-        </select>
-        <select
-          name="arrivalAirportId"
-          value={newFlight.arrivalAirportId}
-          onChange={handleInputChange}
-        >
-          <option value="">Select Arrival Airport</option>
-          {airports.map((airport) => (
-            <option key={airport.id} value={airport.id}>
-              {airport.airportName}
-            </option>
-          ))}
-        </select>
-        <input
-          type="number"
-          name="price"
-          placeholder="Price"
-          value={newFlight.price}
-          onChange={handleInputChange}
-        />
-        <select
-          name="airplaneId"
           value={newFlight.airplaneId}
-          onChange={handleInputChange}
+          onChange={(e) => setNewFlight({ ...newFlight, airplaneId: e.target.value })}
         >
           <option value="">Select Airplane</option>
-          {airplanes.map((plane) => (
-            <option key={plane.airplaneId} value={plane.airplaneId}>
-              {plane.model}
+          {airplanes.map((a) => (
+            <option key={a.airplaneId} value={a.airplaneId}>
+              {a.airplaneName} ({a.airplaneModel})
             </option>
           ))}
         </select>
 
+        <input
+          type="datetime-local"
+          placeholder="Departure Time"
+          value={newFlight.departureTime}
+          onChange={(e) => setNewFlight({ ...newFlight, departureTime: e.target.value })}
+        />
+
+        <input
+          type="datetime-local"
+          placeholder="Arrival Time"
+          value={newFlight.arrivalTime}
+          onChange={(e) => setNewFlight({ ...newFlight, arrivalTime: e.target.value })}
+        />
+
+        <select
+          value={newFlight.departureAirportId}
+          onChange={(e) => setNewFlight({ ...newFlight, departureAirportId: e.target.value })}
+        >
+          <option value="">Select Departure Airport</option>
+          {airports.map((a) => (
+            <option key={a.id} value={a.id}>
+              {a.airportName} ({a.city})
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={newFlight.arrivalAirportId}
+          onChange={(e) => setNewFlight({ ...newFlight, arrivalAirportId: e.target.value })}
+        >
+          <option value="">Select Arrival Airport</option>
+          {airports.map((a) => (
+            <option key={a.id} value={a.id}>
+              {a.airportName} ({a.city})
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="number"
+          placeholder="Price"
+          value={newFlight.price}
+          onChange={(e) => setNewFlight({ ...newFlight, price: e.target.value })}
+        />
+
         <button
-          onClick={editingFlightId ? handleEditFlight : handleAddFlight}
+          onClick={editingFlightId ? handleUpdateFlight : handleAddFlight}
           className={editingFlightId ? "update-btn" : "add-btn"}
         >
           {editingFlightId ? "✅ Update Flight" : "➕ Add Flight"}
         </button>
 
         {editingFlightId && (
-          <button onClick={() => setEditingFlightId(null)} className="cancel-btn">
+          <button className="cancel-btn" onClick={resetForm}>
             ❌ Cancel
           </button>
         )}
       </div>
 
       <div className="flights-list">
-        {flights.length === 0 ? (
-          <p>No flights available.</p>
-        ) : (
-          flights.map((flight) => (
-            <div key={flight.id} className="flight-card">
-              <h3>{flight.airline}</h3>
-              <p>
-                <strong>Route:</strong>{" "}
-                {getAirportNameById(flight.departureAirportId)} →{" "}
-                {getAirportNameById(flight.arrivalAirportId)}
-              </p>
-              <p>
-                <strong>Departure:</strong> {formatDateTime(flight.departureTime)}
-              </p>
-              <p>
-                <strong>Arrival:</strong> {formatDateTime(flight.arrivalTime)}
-              </p>
-              <p>
-                <strong>Airplane:</strong> {getAirplaneModelById(flight.airplaneId)}
-              </p>
-              <p>
-                <strong>Price:</strong> ₹{flight.price.toLocaleString()}
-              </p>
-
-              <div className="action-buttons">
-                <button
-                  onClick={() => {
-                    setEditingFlightId(flight.id);
-                    setNewFlight({
-                      airline: flight.airline,
-                      departureTime: flight.departureTime,
-                      arrivalTime: flight.arrivalTime,
-                      departureAirportId: flight.departureAirportId,
-                      arrivalAirportId: flight.arrivalAirportId,
-                      price: flight.price,
-                      airplaneId: flight.airplaneId,
-                    });
-                  }}
-                >
-                  ✏️ Edit
-                </button>
-                <button onClick={() => handleDeleteFlight(flight.id)}>🗑 Delete</button>
-              </div>
+        {flights.map((flight) => (
+          <div key={flight.id} className="flight-card">
+            <div className="flight-details">
+              <h3>✈️ {flight.airline}</h3>
+              <p><strong>From:</strong> {getAirportNameById(flight.departureAirportId)}</p>
+              <p><strong>To:</strong> {getAirportNameById(flight.arrivalAirportId)}</p>
+              <p><strong>Departure:</strong> {flight.departureTime}</p>
+              <p><strong>Arrival:</strong> {flight.arrivalTime}</p>
+              <p><strong>Airplane:</strong> {getAirplaneNameById(flight.airplaneId)}</p>
+              <p><strong>Price:</strong> ₹{flight.price}</p>
             </div>
-          ))
-        )}
+
+            <div className="action-buttons">
+              <button onClick={() => handleEditFlight(flight)}>✏️ Edit</button>
+              <button onClick={() => handleDeleteFlight(flight.id)}>🗑 Delete</button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

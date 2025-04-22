@@ -84,7 +84,7 @@ const AdminDashboard = ({ token: propToken }) => {
       <aside className="admin-sidebar animate__animated animate__fadeInLeft">
         <h2>Admin Panel</h2>
         <ul>
-          <li><Link to="/dashboard">🏠 Main Dashboard</Link></li>
+          {/* <li><Link to="/dashboard">🏠 Main Dashboard</Link></li> */}
           <li><Link to="/adminflights">✈️ Manage Flights</Link></li>
           <li><Link to="/adminairplanes">🛫 Manage Airplanes</Link></li>
           <li><Link to="/adminairports">🛬 Manage Airports</Link></li>

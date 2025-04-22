@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchAirplanes } from "../services/airplaneService";
+import { fetchAirplanes } from "../services/airplaneService.js";
 
 const Airplanes = ({ token }) => {
   const [airplanes, setAirplanes] = useState([]);
@@ -28,9 +28,9 @@ const Airplanes = ({ token }) => {
 
       <ul>
         {airplanes.map((airplane) => (
-          <li key={airplane.airplaneNumber}>
+          <li key={airplane.airplaneId}>
             <strong>{airplane.airplaneName}</strong> ({airplane.airplaneModel}) —{" "}
-            {airplane.manufacturer}, Capacity: {airplane.capacity}
+            {airplane.manufacturer}, Capacity: {airplane.capacity}, Airplane ID: {airplane.airplaneId}
           </li>
         ))}
       </ul>

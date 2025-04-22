@@ -1,24 +1,65 @@
-// src/components/AirportAutocomplete.js
 import React, { useState, useEffect } from "react";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-
-const AirportAutocomplete = ({ label, onSelect, onSearch, airports }) => {
-  const [inputValue, setInputValue] = useState("");
-
+import axios from "axios";
+ 
+const API_URL = "http://localhost:1212/api";
+ 
+const AirportAutocomplete = ({ label, onSelect }) => {
+  const [query, setQuery] = useState("");
+  const [airports, setAirports] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+ 
   useEffect(() => {
-    if (inputValue) onSearch(inputValue);
-  }, [inputValue]);
-
+    const fetchAirports = async () => {
+      if (query.length < 3) {
+        setAirports([]);
+        return;
+      }
+ 
+      setIsLoading(true);
+      const token = localStorage.getItem("token");
+      try {
+        const res = await axios.get(`${API_URL}/airports/search?query=${query}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setAirports(res.data);
+      } catch (err) {
+        console.error("Failed to fetch airports", err);
+        setAirports([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchAirports();
+  }, [query]);
+ 
   return (
-    <Autocomplete
-      options={airports}
-      getOptionLabel={(option) => `${option.name} (${option.code}) - ${option.city}`}
-      onInputChange={(e, newVal) => setInputValue(newVal)}
-      onChange={(e, newVal) => onSelect(newVal)}
-      renderInput={(params) => <TextField {...params} label={label} />}
-    />
+    <div className="autocomplete-wrapper">
+      <label>{label}</label>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder={`Search ${label} Airport`}
+      />
+      {isLoading && <p>Loading airports...</p>}
+      {airports.length > 0 && (
+        <ul className="dropdown">
+          {airports.map((airport) => (
+            <li
+              key={airport.airportId}
+              onClick={() => {
+                setQuery(airport.airportName); // Update the query to show the selected airport's name
+                onSelect(airport); // Pass the selected airport to the parent
+                setAirports([]); // Close the dropdown
+              }}
+            >
+              {airport.airportName} ({airport.airportCode}) - {airport.airportCity}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 };
-
+ 
 export default AirportAutocomplete;

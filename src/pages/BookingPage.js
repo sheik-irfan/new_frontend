@@ -1,84 +1,145 @@
-// src/pages/BookingPage.js
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/BookingPage.css";
 
 const API_URL = "http://localhost:1212/api";
 
 const BookingPage = () => {
-  const { state } = useLocation();
+  const { flightId } = useParams();
   const navigate = useNavigate();
-  const { flight, userId, token } = state || {};
+  const [flight, setFlight] = useState(null);
   const [wallet, setWallet] = useState(null);
+  const [airplane, setAirplane] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const fetchWallet = async () => {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+  useEffect(() => {
+    if (!token || !flightId) {
+      setError("Unauthorized or missing data.");
+      return;
+    }
+
+    fetchFlightDetails();
+    fetchWallet();
+  }, []);
+
+  const fetchFlightDetails = async () => {
     try {
-      const res = await axios.get(`${API_URL}/wallets/${userId}`, {
+      const response = await axios.get(`${API_URL}/flights/${flightId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setWallet(res.data);
+      setFlight(response.data);
+      fetchAirplaneDetails(response.data.airplaneId);
     } catch (err) {
-      console.error("Failed to fetch wallet", err);
+      console.error("Error fetching flight:", err);
+      setError("Could not load flight.");
     }
   };
 
-  const confirmBooking = async () => {
-    if (!wallet || wallet.balance < flight.price) {
-      alert("Insufficient balance. Please top up your wallet.");
+  const fetchAirplaneDetails = async (airplaneId) => {
+    try {
+      const response = await axios.get(`${API_URL}/airplanes/${airplaneId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAirplane(response.data);
+    } catch (err) {
+      console.error("Error fetching airplane:", err);
+    }
+  };
+
+  const fetchWallet = async () => {
+    try {
+      const response = await fetch(`${API_URL}/wallet`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Wallet fetch failed: ${response.status}`);
+      }
+
+      const walletData = await response.json();
+      setWallet(walletData);
+    } catch (err) {
+      console.error("Wallet fetch error:", err);
+      setError("Could not fetch wallet balance.");
+    }
+  };
+
+  const handleBooking = async () => {
+    if (!wallet || !flight) return;
+
+    if (wallet.balance < flight.price) {
+      alert("⚠️ Insufficient balance. Please top up your wallet.");
       return;
     }
 
     setLoading(true);
     try {
-      await axios.post(
+      const response = await axios.post(
         `${API_URL}/bookings`,
-        { userId, flightId: flight.flightId },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { flightId: flight.id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
-      alert("Booking confirmed!");
-      navigate("/dashboard");
+
+      alert("✅ Booking successful!");
+      navigate("/bookings");
     } catch (err) {
-      console.error("Booking error", err);
-      alert("Booking failed");
+      console.error("Booking failed:", err);
+      alert("❌ Booking failed.");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (!flight || !userId || !token) {
-      alert("Invalid access");
-      navigate("/");
-      return;
-    }
-    fetchWallet();
-  }, []);
+  if (error) return <div style={{ padding: "2rem", color: "red" }}>{error}</div>;
+  if (!flight) return <p style={{ padding: "2rem" }}>Loading flight info...</p>;
 
   return (
-    <div className="booking-page">
+    <div style={{ padding: "2rem" }}>
       <h2>Confirm Your Booking</h2>
-      <div className="flight-card">
-        <p>✈️ {flight.flightNumber}</p>
-        <p>{flight.source} → {flight.destination}</p>
-        <p>📅 {flight.departureDate} | 🕐 {flight.departureTime} - {flight.arrivalTime}</p>
-        <p>💺 Airplane: {flight.airplaneId}</p>
+      <div style={{ marginBottom: "1rem", border: "1px solid #ccc", padding: "1rem" }}>
+        <p>✈️ {flight.airline || "Air Bharat"}</p>
+        <p>{flight.fromAirportName} → {flight.toAirportName}</p>
+        <p>
+          📅 {new Date(flight.departureTime).toLocaleDateString()} | 🕐{" "}
+          {new Date(flight.departureTime).toLocaleTimeString()} -{" "}
+          {new Date(flight.arrivalTime).toLocaleTimeString()}
+        </p>
+
+        {airplane ? (
+          <p>💺 Airplane: {airplane.airplaneName} ({airplane.airplaneModel})</p>
+        ) : (
+          <p>Loading airplane info...</p>
+        )}
+
         <p>💰 Price: ₹{flight.price}</p>
       </div>
 
-      <div className="wallet-info">
-        <h3>Wallet Balance</h3>
-        {wallet ? <p>₹{wallet.balance}</p> : <p>Loading wallet...</p>}
-      </div>
-
-      <button className="confirm-btn" onClick={confirmBooking} disabled={loading}>
-        {loading ? "Booking..." : "✅ Confirm Booking"}
-      </button>
-
-      <button className="back-btn" onClick={() => navigate("/dashboard")}>
-        ⬅ Back to Dashboard
-      </button>
+      {wallet ? (
+        <div>
+          <p><strong>Wallet Balance:</strong> ₹{wallet.balance}</p>
+          <button
+            onClick={handleBooking}
+            disabled={loading}
+            style={{ padding: "0.5rem 1rem", marginTop: "1rem" }}
+          >
+            {loading ? "Booking..." : "✅ Confirm Booking"}
+          </button>
+        </div>
+      ) : (
+        <p>Loading wallet...</p>
+      )}
     </div>
   );
 };

@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/BookingHistoryPage.css";
+
 const API_URL = "http://localhost:1212/api";
 
-const BookingHistoryPage = ({ token, userId }) => {
+const BookingHistoryPage = ({ token }) => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortOrder, setSortOrder] = useState("desc");
@@ -12,14 +13,16 @@ const BookingHistoryPage = ({ token, userId }) => {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API_URL}/bookings/user/${userId}`, {
+      const res = await axios.get(`${API_URL}/bookings/user`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       let sorted = res.data.sort((a, b) =>
         sortOrder === "desc"
-          ? new Date(b.bookingDate) - new Date(a.bookingDate)
-          : new Date(a.bookingDate) - new Date(b.bookingDate)
+          ? new Date(b.bookingTime) - new Date(a.bookingTime)
+          : new Date(a.bookingTime) - new Date(b.bookingTime)
       );
+
       setBookings(sorted);
     } catch (err) {
       console.error("Failed to fetch bookings", err);
@@ -46,10 +49,10 @@ const BookingHistoryPage = ({ token, userId }) => {
   };
 
   useEffect(() => {
-    if (userId && token) {
+    if (token) {
       fetchBookings();
     }
-  }, [userId, token, sortOrder]);
+  }, [token, sortOrder]);
 
   return (
     <div className="booking-history-wrapper">
@@ -58,6 +61,7 @@ const BookingHistoryPage = ({ token, userId }) => {
         <button className="sort-btn" onClick={toggleSortOrder}>
           Sort by Date ({sortOrder === "desc" ? "Newest" : "Oldest"})
         </button>
+
         {loading ? (
           <p>Loading...</p>
         ) : bookings.length > 0 ? (
@@ -65,7 +69,11 @@ const BookingHistoryPage = ({ token, userId }) => {
             {bookings.map((booking) => (
               <li key={booking.bookingId}>
                 Flight #{booking.flightId} booked on{" "}
-                {new Date(booking.bookingDate).toLocaleDateString()}
+                {new Date(booking.bookingTime).toLocaleString()}
+                <br />
+                💸 Amount: ₹{booking.totalAmount}
+                <br />
+                🧾 Booking ID: {booking.bookingId}
                 <button
                   className="cancel-btn"
                   onClick={() => cancelBooking(booking.bookingId)}

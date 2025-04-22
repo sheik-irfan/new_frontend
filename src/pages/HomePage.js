@@ -15,7 +15,6 @@ const HomePage = () => {
     tripType: "",
   });
   const [allFlights, setAllFlights] = useState([]);
-  const [filteredFlights, setFilteredFlights] = useState([]);
   const [airports, setAirports] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -104,7 +103,6 @@ const HomePage = () => {
               <span>EFFICIENT</span>
             </div>
           </div>
-
           <div className="hero-text-right">
             <h1>Travel Experience</h1>
             <div className="hero-tagline">
@@ -113,7 +111,6 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-
         <p className="hero-subtitle">Premium flight bookings with effortless convenience</p>
 
         <div className="search-form-container">
@@ -161,6 +158,36 @@ const HomePage = () => {
           <p className="travel-quote">"{quotes[currentIndex].text}"</p>
           <p className="quote-author">- {quotes[currentIndex].author}</p>
         </div>
+
+        {allFlights.length > 0 && (
+          <div className="flights-list-section">
+            <h2>✈️ All Available Flights</h2>
+            <table className="flights-table">
+              <thead>
+                <tr>
+                  <th>Airline</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Departure</th>
+                  <th>Arrival</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allFlights.map((flight) => (
+                  <tr key={flight.id}>
+                    <td>{flight.airline}</td>
+                    <td>{flight.fromAirportName || flight.departureAirportName}</td>
+                    <td>{flight.toAirportName || flight.arrivalAirportName}</td>
+                    <td>{new Date(flight.departureTime).toLocaleString()}</td>
+                    <td>{new Date(flight.arrivalTime).toLocaleString()}</td>
+                    <td>₹{flight.price.toLocaleString("en-IN")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
