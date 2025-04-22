@@ -20,7 +20,7 @@ import AdminAirports from "./pages/AdminAirports";
 import AdminUsers from "./pages/AdminUsers";
 import BookingPage from "./pages/BookingPage";
 import "./App.css";
-import FlightSearchPage from "./pages/FlightSearchPage";
+import FlightSearchPage from "./pages/FlightSearchFrom";
 import Footer from "./components/Footer"; // Import Footer
 import ChatBox from "./components/ChatBox"; // Import ChatBox
 

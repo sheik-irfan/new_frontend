@@ -70,6 +70,7 @@ const AdminFlights = ({ token }) => {
       resetForm();
     } catch (err) {
       alert("Failed to add flight");
+      console.error(err);
     }
   };
 
@@ -129,9 +130,8 @@ const AdminFlights = ({ token }) => {
     return airport ? airport.airportName : "Unknown Airport";
   };
 
-  const getAirplaneNameById = (id) => {
-    const airplane = airplanes.find((a) => a.airplaneId === id);
-    return airplane ? `${airplane.airplaneName} (${airplane.airplaneModel})` : "Unknown Airplane";
+  const getAirplaneById = (id) => {
+    return airplanes.find((plane) => plane.airplaneId === id);
   };
 
   useEffect(() => {
@@ -157,51 +157,35 @@ const AdminFlights = ({ token }) => {
           onChange={(e) => setNewFlight({ ...newFlight, airplaneId: e.target.value })}
         >
           <option value="">Select Airplane</option>
-          {airplanes.map((a) => (
-            <option key={a.airplaneId} value={a.airplaneId}>
-              {a.airplaneName} ({a.airplaneModel})
+          {airplanes.map((airplane) => (
+            <option key={airplane.airplaneId} value={airplane.airplaneId}>
+              {airplane.airplaneName} - {airplane.airplaneModel} ({airplane.manufacturer})
             </option>
           ))}
         </select>
 
         <input
           type="datetime-local"
-          placeholder="Departure Time"
           value={newFlight.departureTime}
           onChange={(e) => setNewFlight({ ...newFlight, departureTime: e.target.value })}
         />
-
         <input
           type="datetime-local"
-          placeholder="Arrival Time"
           value={newFlight.arrivalTime}
           onChange={(e) => setNewFlight({ ...newFlight, arrivalTime: e.target.value })}
         />
-
-        <select
+        <input
+          type="number"
+          placeholder="Departure Airport ID"
           value={newFlight.departureAirportId}
           onChange={(e) => setNewFlight({ ...newFlight, departureAirportId: e.target.value })}
-        >
-          <option value="">Select Departure Airport</option>
-          {airports.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.airportName} ({a.city})
-            </option>
-          ))}
-        </select>
-
-        <select
+        />
+        <input
+          type="number"
+          placeholder="Arrival Airport ID"
           value={newFlight.arrivalAirportId}
           onChange={(e) => setNewFlight({ ...newFlight, arrivalAirportId: e.target.value })}
-        >
-          <option value="">Select Arrival Airport</option>
-          {airports.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.airportName} ({a.city})
-            </option>
-          ))}
-        </select>
-
+        />
         <input
           type="number"
           placeholder="Price"
@@ -224,24 +208,32 @@ const AdminFlights = ({ token }) => {
       </div>
 
       <div className="flights-list">
-        {flights.map((flight) => (
-          <div key={flight.id} className="flight-card">
-            <div className="flight-details">
-              <h3>✈️ {flight.airline}</h3>
-              <p><strong>From:</strong> {getAirportNameById(flight.departureAirportId)}</p>
-              <p><strong>To:</strong> {getAirportNameById(flight.arrivalAirportId)}</p>
-              <p><strong>Departure:</strong> {flight.departureTime}</p>
-              <p><strong>Arrival:</strong> {flight.arrivalTime}</p>
-              <p><strong>Airplane:</strong> {getAirplaneNameById(flight.airplaneId)}</p>
-              <p><strong>Price:</strong> ₹{flight.price}</p>
-            </div>
+        {flights.map((flight) => {
+          const airplane = getAirplaneById(flight.airplaneId);
+          return (
+            <div key={flight.id} className="flight-card">
+              <div className="flight-details">
+                <h3>✈️ {flight.airline}</h3>
+                <p><strong>From:</strong> {getAirportNameById(flight.departureAirportId)}</p>
+                <p><strong>To:</strong> {getAirportNameById(flight.arrivalAirportId)}</p>
+                <p><strong>Departure:</strong> {flight.departureTime}</p>
+                <p><strong>Arrival:</strong> {flight.arrivalTime}</p>
+                <p>
+                  <strong>Airplane:</strong>{" "}
+                  {airplane
+                    ? `${airplane.airplaneName} - ${airplane.airplaneModel} (${airplane.manufacturer})`
+                    : `Unknown (ID: ${flight.airplaneId})`}
+                </p>
+                <p><strong>Price:</strong> ₹{flight.price}</p>
+              </div>
 
-            <div className="action-buttons">
-              <button onClick={() => handleEditFlight(flight)}>✏️ Edit</button>
-              <button onClick={() => handleDeleteFlight(flight.id)}>🗑 Delete</button>
+              <div className="action-buttons">
+                <button onClick={() => handleEditFlight(flight)}>✏️ Edit</button>
+                <button onClick={() => handleDeleteFlight(flight.id)}>🗑 Delete</button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

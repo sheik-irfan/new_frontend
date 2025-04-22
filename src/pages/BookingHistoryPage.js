@@ -1,4 +1,3 @@
-// src/pages/BookingHistoryPage.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/BookingHistoryPage.css";
@@ -7,9 +6,11 @@ const API_URL = "http://localhost:1212/api";
 
 const BookingHistoryPage = ({ token }) => {
   const [bookings, setBookings] = useState([]);
+  const [flights, setFlights] = useState({});
   const [loading, setLoading] = useState(false);
   const [sortOrder, setSortOrder] = useState("desc");
 
+  // Fetch bookings and flight details
   const fetchBookings = async () => {
     try {
       setLoading(true);
@@ -24,8 +25,24 @@ const BookingHistoryPage = ({ token }) => {
       );
 
       setBookings(sorted);
+
+      // Fetch flight details for each booking
+      const flightIds = sorted.map((booking) => booking.flightId);
+      const flightPromises = flightIds.map((flightId) =>
+        axios.get(`${API_URL}/flights/${flightId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      );
+
+      const flightResponses = await Promise.all(flightPromises);
+      const flightData = flightResponses.reduce((acc, response) => {
+        acc[response.data.flightId] = response.data;
+        return acc;
+      }, {});
+
+      setFlights(flightData);
     } catch (err) {
-      console.error("Failed to fetch bookings", err);
+      console.error("Failed to fetch bookings or flights", err);
     } finally {
       setLoading(false);
     }
@@ -54,6 +71,10 @@ const BookingHistoryPage = ({ token }) => {
     }
   }, [token, sortOrder]);
 
+  const formatDate = (date) => {
+    return new Date(date).toLocaleString(); // Format the date in a user-friendly format
+  };
+
   return (
     <div className="booking-history-wrapper">
       <div className="booking-history-card">
@@ -66,22 +87,28 @@ const BookingHistoryPage = ({ token }) => {
           <p>Loading...</p>
         ) : bookings.length > 0 ? (
           <ul>
-            {bookings.map((booking) => (
-              <li key={booking.bookingId}>
-                Flight #{booking.flightId} booked on{" "}
-                {new Date(booking.bookingTime).toLocaleString()}
-                <br />
-                💸 Amount: ₹{booking.totalAmount}
-                <br />
-                🧾 Booking ID: {booking.bookingId}
-                <button
-                  className="cancel-btn"
-                  onClick={() => cancelBooking(booking.bookingId)}
-                >
-                  Cancel
-                </button>
-              </li>
-            ))}
+            {bookings.map((booking) => {
+              const flight = flights[booking.flightId]; // Get flight details by flightId
+              return (
+                <li key={booking.bookingId}>
+                  <h3>Flight #{flight?.flightNumber || "N/A"}</h3>
+                  <p><strong>Source:</strong> {flight?.source || "N/A"}</p>
+                  <p><strong>Destination:</strong> {flight?.destination || "N/A"}</p>
+                  <p>
+                    <strong>Departure:</strong> {flight?.departureDate ? formatDate(flight?.departureDate) : "N/A"}
+                  </p>
+                  <p>💸 Amount: ₹{booking.totalAmount}</p>
+                  <p>🧾 Booking ID: {booking.bookingId}</p>
+                  <p>📅 Booked on: {formatDate(booking.bookingTime)}</p>
+                  <button
+                    className="cancel-btn"
+                    onClick={() => cancelBooking(booking.bookingId)}
+                  >
+                    Cancel
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <p>No bookings found.</p>
