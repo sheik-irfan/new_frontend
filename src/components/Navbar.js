@@ -18,6 +18,10 @@ const Navbar = ({ user, onLogout }) => {
     navigate("/");
   };
 
+  const handleAdminPage = () => {
+    navigate("/admin");
+  }
+
   const handleLogoClick = () => {
     setClicks(prev => prev + 1);
     clearTimeout(clickTimeoutRef.current);
@@ -80,7 +84,7 @@ const Navbar = ({ user, onLogout }) => {
           </>
         ) : (
           <>
-            <li className="user-info">👤 {user.userEmail}</li>
+            <li> <button onClick={handleAdminPage} className="user-info">👤 {user.userEmail} </button></li>
             <li><button onClick={handleLogout} className="logout-btn">🚪 Logout</button></li>
           </>
         )}
