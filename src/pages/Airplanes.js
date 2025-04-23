@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchAirplanes } from "../services/airplaneService.js";
+import { fetchAirplanes } from "../services/AdminAirplaneService.js";
 
 const Airplanes = ({ token }) => {
   const [airplanes, setAirplanes] = useState([]);

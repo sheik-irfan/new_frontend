@@ -1,37 +1,32 @@
+// components/AirportAutocomplete.js
+
 import React, { useState, useEffect } from "react";
-import axios from "axios";
- 
-const API_URL = "http://localhost:1212/api";
- 
+import { fetchAirports } from "../services/AirportAutocompleteService.js";
+import { defaultAirport } from "../models/AirportAutocomplete";
+import "../styles/AirportAutocomplete.css"; // Optional: Make sure this file exists and is imported
+
 const AirportAutocomplete = ({ label, onSelect }) => {
   const [query, setQuery] = useState("");
   const [airports, setAirports] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
- 
+
   useEffect(() => {
-    const fetchAirports = async () => {
+    const fetchAirportData = async () => {
       if (query.length < 3) {
-        setAirports([]);
+        setAirports([]); // Clear the list if query is less than 3 characters
         return;
       }
- 
+
       setIsLoading(true);
       const token = localStorage.getItem("token");
-      try {
-        const res = await axios.get(`${API_URL}/airports/search?query=${query}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setAirports(res.data);
-      } catch (err) {
-        console.error("Failed to fetch airports", err);
-        setAirports([]);
-      } finally {
-        setIsLoading(false);
-      }
+      const fetchedAirports = await fetchAirports(query, token);
+      setAirports(fetchedAirports);
+      setIsLoading(false);
     };
-    fetchAirports();
+
+    fetchAirportData();
   }, [query]);
- 
+
   return (
     <div className="autocomplete-wrapper">
       <label>{label}</label>
@@ -61,5 +56,5 @@ const AirportAutocomplete = ({ label, onSelect }) => {
     </div>
   );
 };
- 
+
 export default AirportAutocomplete;

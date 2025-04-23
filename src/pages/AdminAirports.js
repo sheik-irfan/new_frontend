@@ -1,27 +1,20 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import "../styles/AdminAirports.css"; // Assuming you have a CSS file for styling
+// components/AdminAirports.js
 
-const API_URL = "http://localhost:1212/api";
+import React, { useEffect, useState } from "react";
+import { getAirports, addAirport, updateAirport, deleteAirport } from "../services/AdminAirportsService";
+import { defaultAirport } from "../models/AdminAirportsModel";
+import "../styles/AdminAirports.css"; // Assuming you have a CSS file for styling
 
 const AdminAirports = ({ token }) => {
   const [airports, setAirports] = useState([]);
   const [filteredAirports, setFilteredAirports] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [newAirport, setNewAirport] = useState({
-    airportName: "",
-    airportCode: "",
-    airportCity: "",
-    airportState: "",
-    airportCountry: "",
-  });
+  const [newAirport, setNewAirport] = useState({ ...defaultAirport });
   const [editingCode, setEditingCode] = useState(null); // Store airport code for editing
 
   const fetchAirports = async () => {
     try {
-      const res = await axios.get(`${API_URL}/airports`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await getAirports(token);
       setAirports(res.data);
       setFilteredAirports(res.data);
     } catch (err) {
@@ -33,23 +26,13 @@ const AdminAirports = ({ token }) => {
     try {
       if (editingCode) {
         // Use airportCode (e.g., LAX) in the PUT request URL
-        await axios.put(`${API_URL}/airports/${editingCode}`, newAirport, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await updateAirport(token, editingCode, newAirport);
         setEditingCode(null); // Reset editing code after update
       } else {
-        await axios.post(`${API_URL}/airports`, newAirport, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await addAirport(token, newAirport);
       }
       fetchAirports();
-      setNewAirport({
-        airportName: "",
-        airportCode: "",
-        airportCity: "",
-        airportState: "",
-        airportCountry: "",
-      });
+      setNewAirport({ ...defaultAirport });
     } catch (err) {
       alert("Failed to save airport");
     }
@@ -57,9 +40,7 @@ const AdminAirports = ({ token }) => {
 
   const handleDeleteAirport = async (code) => {
     try {
-      await axios.delete(`${API_URL}/airports/${code}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await deleteAirport(token, code);
       fetchAirports();
     } catch (err) {
       alert("Failed to delete airport");
@@ -84,7 +65,7 @@ const AdminAirports = ({ token }) => {
 
   useEffect(() => {
     fetchAirports();
-  }, []);
+  }, [token]);
 
   return (
     <div className="admin-airports-container">

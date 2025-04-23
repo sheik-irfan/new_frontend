@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import "../styles/AdminUsers.css"; // Optional: Make sure this file exists and is imported
+// components/AdminUsers.js
 
-const API_URL = "http://localhost:1212/api";
+import React, { useEffect, useState } from "react";
+import { fetchUsers } from "../services/AdminUsersService";
+import { defaultUser } from "../models/UserModel";
+import "../styles/AdminUsers.css"; // Optional: Make sure this file exists and is imported
 
 const AdminUsers = ({ token }) => {
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
 
-  const fetchUsers = async () => {
+  const fetchUsersData = async () => {
     try {
-      const res = await axios.get(`${API_URL}/users`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetchUsers(token);
       setUsers(res.data);
       setFilteredUsers(res.data);
     } catch (err) {
@@ -33,8 +32,10 @@ const AdminUsers = ({ token }) => {
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    if (token) {
+      fetchUsersData();
+    }
+  }, [token]);
 
   return (
     <div className="admin-users-container">

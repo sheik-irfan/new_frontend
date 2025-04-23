@@ -56,6 +56,7 @@ const AdminAirplanes = ({ token }) => {
 
   const handleUpdateAirplane = async () => {
     try {
+      // Updated URL for PUT request: Using 'number' in the endpoint
       await axios.put(`${API_URL}/airplanes/number/${editAirplane.airplaneNumber}`, editAirplane, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -141,15 +142,16 @@ const AdminAirplanes = ({ token }) => {
 
       <ul className="airplanes-list">
         {airplanes.map((plane) => (
-          <li key={plane.airplaneId}>
+          <li key={plane.airplaneNumber}>
             <div className="plane-info">
-              <strong>{plane.airplaneName}</strong> - {plane.airplaneModel} ({plane.manufacturer})
-              <br />
-              ✈️ <strong>Airplane ID:</strong> {plane.airplaneId} — Capacity: {plane.capacity}
+              <strong>{plane.airplaneName}</strong> - {plane.airplaneModel} (
+              {plane.manufacturer}) - Capacity: {plane.capacity}
             </div>
             <div className="plane-actions">
               <button onClick={() => handleEditClick(plane)}>Edit</button>
-              <button onClick={() => handleDeleteAirplane(plane.airplaneNumber)}>Delete</button>
+              <button onClick={() => handleDeleteAirplane(plane.airplaneNumber)}>
+                Delete
+              </button>
             </div>
           </li>
         ))}
@@ -162,3 +164,4 @@ const AdminAirplanes = ({ token }) => {
 };
 
 export default AdminAirplanes;
+

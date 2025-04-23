@@ -1,0 +1,1 @@
+export const formatAirport = (airport) => `${airport.airportName} — ${airport.airportCity}, ${airport.airportCountry} (${airport.airportCode})`;

@@ -1,54 +1,35 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import "../styles/AdminFlights.css";
+// components/AdminFlights.js
 
-const API_URL = "http://localhost:1212/api";
+import React, { useEffect, useState } from "react";
+import { fetchFlights, fetchAirports, fetchAirplanes, addFlight, updateFlight, deleteFlight } from "../services/AdminFlightsService";
+import { defaultFlight } from "../models/AdminFlightsModel";
+import "../styles/AdminFlights.css";
 
 const AdminFlights = ({ token }) => {
   const [flights, setFlights] = useState([]);
   const [airports, setAirports] = useState([]);
   const [airplanes, setAirplanes] = useState([]);
   const [editingFlightId, setEditingFlightId] = useState(null);
-  const [newFlight, setNewFlight] = useState({
-    airline: "",
-    airplaneId: "",
-    departureTime: "",
-    arrivalTime: "",
-    departureAirportId: "",
-    arrivalAirportId: "",
-    price: ""
-  });
+  const [newFlight, setNewFlight] = useState(defaultFlight);
 
-  const fetchFlights = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/flights`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setFlights(res.data);
-    } catch (err) {
-      console.error("Failed to fetch flights", err);
+  useEffect(() => {
+    if (token) {
+      fetchFlightsData();
     }
-  };
+  }, [token]);
 
-  const fetchAirports = async () => {
+  const fetchFlightsData = async () => {
     try {
-      const res = await axios.get(`${API_URL}/airports`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setAirports(res.data);
-    } catch (err) {
-      console.error("Failed to fetch airports", err);
-    }
-  };
+      const flightRes = await fetchFlights(token);
+      setFlights(flightRes.data);
 
-  const fetchAirplanes = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/airplanes`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setAirplanes(res.data);
+      const airportRes = await fetchAirports(token);
+      setAirports(airportRes.data);
+
+      const airplaneRes = await fetchAirplanes(token);
+      setAirplanes(airplaneRes.data);
     } catch (err) {
-      console.error("Failed to fetch airplanes", err);
+      console.error("Failed to fetch data:", err);
     }
   };
 
@@ -59,14 +40,11 @@ const AdminFlights = ({ token }) => {
         airplaneId: parseInt(newFlight.airplaneId),
         departureAirportId: parseInt(newFlight.departureAirportId),
         arrivalAirportId: parseInt(newFlight.arrivalAirportId),
-        price: parseFloat(newFlight.price)
+        price: parseFloat(newFlight.price),
       };
 
-      await axios.post(`${API_URL}/flights`, flightToSend, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      fetchFlights();
+      await addFlight(token, flightToSend);
+      fetchFlightsData();
       resetForm();
     } catch (err) {
       alert("Failed to add flight");
@@ -86,14 +64,11 @@ const AdminFlights = ({ token }) => {
         airplaneId: parseInt(newFlight.airplaneId),
         departureAirportId: parseInt(newFlight.departureAirportId),
         arrivalAirportId: parseInt(newFlight.arrivalAirportId),
-        price: parseFloat(newFlight.price)
+        price: parseFloat(newFlight.price),
       };
 
-      await axios.put(`${API_URL}/flights/${editingFlightId}`, updatedFlight, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      fetchFlights();
+      await updateFlight(token, editingFlightId, updatedFlight);
+      fetchFlightsData();
       resetForm();
     } catch (err) {
       alert("Failed to update flight");
@@ -103,25 +78,15 @@ const AdminFlights = ({ token }) => {
 
   const handleDeleteFlight = async (id) => {
     try {
-      await axios.delete(`${API_URL}/flights/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      fetchFlights();
+      await deleteFlight(token, id);
+      fetchFlightsData();
     } catch (err) {
       alert("Failed to delete flight");
     }
   };
 
   const resetForm = () => {
-    setNewFlight({
-      airline: "",
-      airplaneId: "",
-      departureTime: "",
-      arrivalTime: "",
-      departureAirportId: "",
-      arrivalAirportId: "",
-      price: ""
-    });
+    setNewFlight(defaultFlight);
     setEditingFlightId(null);
   };
 
@@ -133,12 +98,6 @@ const AdminFlights = ({ token }) => {
   const getAirplaneById = (id) => {
     return airplanes.find((plane) => plane.airplaneId === id);
   };
-
-  useEffect(() => {
-    fetchFlights();
-    fetchAirports();
-    fetchAirplanes();
-  }, []);
 
   return (
     <div className="admin-flights-container">
@@ -220,9 +179,7 @@ const AdminFlights = ({ token }) => {
                 <p><strong>Arrival:</strong> {flight.arrivalTime}</p>
                 <p>
                   <strong>Airplane:</strong>{" "}
-                  {airplane
-                    ? `${airplane.airplaneName} - ${airplane.airplaneModel} (${airplane.manufacturer})`
-                    : `Unknown (ID: ${flight.airplaneId})`}
+                  {airplane ? `${airplane.airplaneName} - ${airplane.airplaneModel} (${airplane.manufacturer})` : `Unknown (ID: ${flight.airplaneId})`}
                 </p>
                 <p><strong>Price:</strong> ₹{flight.price}</p>
               </div>

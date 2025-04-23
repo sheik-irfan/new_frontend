@@ -1,58 +1,29 @@
+// src/pages/LoginPage.js
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../styles/LoginPage.css"; // optional CSS
+import "../styles/LoginPage.css";
 import "animate.css";
-import { jwtDecode } from "jwt-decode";
-
-const API_URL = "http://localhost:1212/api";
-
+import { loginUser } from "../services/LoginService";
+ 
 const LoginPage = ({ onLogin }) => {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+ 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-
+ 
     try {
-      // Send login request to backend
-      const res = await axios.post(`${API_URL}/login`, {
-        userEmail,
-        userPassword,
-      });
-
-      const { token, role, id } = res.data;
-
-      // Decode JWT token and get user details
-      let user;
-      try {
-        const decoded = jwtDecode(token);
-        user = {
-          userEmail: decoded.sub || userEmail, // Use email from decoded token if available
-          userRole: decoded.role || role,
-          userId: decoded.userId || id,
-        };
-      } catch (err) {
-        console.error("JWT decode error:", err);
-        setError("❌ Failed to decode JWT token.");
-        return;
-      }
-
-      // Always store token in localStorage
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      // Pass token and user details to parent component (e.g. App.js)
+      const { token, user } = await loginUser(userEmail, userPassword);
+ 
       onLogin(token, user);
-
-      // Redirect user based on their role
-      if (role === "CUSTOMER") {
+ 
+      if (user.userRole === "CUSTOMER") {
         navigate("/dashboard");
-      } else if (role === "ADMIN") {
+      } else if (user.userRole === "ADMIN") {
         navigate("/admin");
       } else {
         setError("❌ Access denied: Unrecognized role.");
@@ -62,7 +33,7 @@ const LoginPage = ({ onLogin }) => {
       setError("❌ Invalid email or password.");
     }
   };
-
+ 
   return (
     <div className="auth-container animate__animated animate__fadeIn">
       <h2 className="animate__animated animate__fadeInDown">Login</h2>
@@ -97,5 +68,5 @@ const LoginPage = ({ onLogin }) => {
     </div>
   );
 };
-
+ 
 export default LoginPage;
