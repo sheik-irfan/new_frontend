@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import LoginPage from "./pages/LoginPage";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/Navbar"
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
 import Wallet from "./pages/Wallet";
@@ -23,6 +23,7 @@ import "./App.css";
 import FlightSearchPage from "./pages/FlightSearchFrom";
 import Footer from "./components/Footer"; // Import Footer
 import ChatBox from "./components/ChatBox"; // Import ChatBox
+import AboutUs from "./pages/AbourUs";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -64,7 +65,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route path="/register" element={<RegisterPage />} />
-
+        <Route path="/about" element={<AboutUs />} />
         {/* Role-based Routing */}
         <Route
           path="/dashboard"

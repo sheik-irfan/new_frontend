@@ -1,43 +1,54 @@
 // src/components/Sidebar.js
-import React, { useState } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import "./Sidebar.css"; // Optional: Add your sidebar styles here
+import "./Sidebar.css"; // Ensure styles are consistent with admin style
 
 const Sidebar = ({ collapsed, setCollapsed, onLogout }) => {
   const location = useLocation();
 
   return (
-    <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
-      <div className="sidebar-header">
-        <h2>{!collapsed ? "Dashboard" : "🧭"}</h2>
-        <button className="toggle-btn" onClick={() => setCollapsed(!collapsed)}>
-          {collapsed ? "➡️" : "⬅️"}
-        </button>
+    <aside className={`admin-sidebar animate__animated animate__fadeInLeft ${collapsed ? "closed" : "open"}`}>
+      {/* Collapse Toggle */}
+      <div className="toggle-btn" onClick={() => setCollapsed(!collapsed)}>
+        {collapsed ? "❯" : "❮"}
       </div>
-      <nav>
-        <ul>
-          <li onClick={() => setCollapsed(true)}>
-            <Link to="/flights">{collapsed ? "✈️" : "✈️ View Flights"}</Link>
-          </li>
-          <li onClick={() => setCollapsed(true)}>
-            <Link to="/airports">{collapsed ? "🛫" : "🛫 Airports"}</Link>
-          </li>
-          <li onClick={() => setCollapsed(true)}>
-            <Link to="/airplanes">{collapsed ? "🛬" : "🛬 Airplanes"}</Link>
-          </li>
-          <li onClick={() => setCollapsed(true)}>
-            <Link to="/wallet">{collapsed ? "💰" : "💰 Wallet"}</Link>
-          </li>
-          <li onClick={() => setCollapsed(true)}>
-            <Link to="/bookings">{collapsed ? "📄" : "📄 Bookings"}</Link>
-          </li>
-          <li>
-            <button className="logout-btn" onClick={onLogout}>
-              {collapsed ? "🚪" : "🚪 Logout"}
-            </button>
-          </li>
-        </ul>
-      </nav>
+
+      {/* Sidebar Header */}
+      {!collapsed && <div className="sidebar-title">Customer Panel</div>}
+
+      {/* Navigation Links */}
+      <ul className="sidebar-nav">
+        <li>
+          <Link to="/dashboard" className={location.pathname === "/dashboard" ? "active" : ""}>
+            {collapsed ? "" : "Dashboard"}
+          </Link>
+        </li>
+        <li>
+          <Link to="/flights" className={location.pathname === "/flights" ? "active" : ""}>
+            {collapsed ? "" : "View Flights"}
+          </Link>
+        </li>
+        {/* <li>
+          <Link to="/airports" className={location.pathname === "/airports" ? "active" : ""}>
+            {collapsed ? "" : "View Airports"}
+          </Link>
+        </li>
+        <li>
+          <Link to="/airplanes" className={location.pathname === "/airplanes" ? "active" : ""}>
+            {collapsed ? "" : "View Airplanes"}
+          </Link>
+        </li> */}
+        <li>
+          <Link to="/wallet" className={location.pathname === "/wallet" ? "active" : ""}>
+            {collapsed ? "" : "Wallet"}
+          </Link>
+        </li>
+        <li>
+          <Link to="/bookings" className={location.pathname === "/bookings" ? "active" : ""}>
+            {collapsed ? "" : "Bookings"}
+          </Link>
+        </li>
+      </ul>
     </aside>
   );
 };

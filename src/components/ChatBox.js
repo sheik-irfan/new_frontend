@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../styles/ChatBox.css";
 
 const ChatBox = () => {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
   const [showChat, setShowChat] = useState(false);
+  const [isTyping, setIsTyping] = useState(false); // For typing indicator
+  const chatBodyRef = useRef(null);
 
   // Predefined responses to common questions
   const predefinedResponses = {
@@ -25,18 +27,20 @@ const ChatBox = () => {
   const handleSendMessage = () => {
     if (userInput.trim()) {
       const newMessage = { sender: "user", text: userInput };
-      setMessages([...messages, newMessage]);
-
-      // Get the response from predefinedResponses
-      const responseText = predefinedResponses[userInput.trim()] || "Sorry, I didn't understand that. Can you ask another question?";
-      const botMessage = { sender: "bot", text: responseText };
-      
-      // Simulate delay before bot responds
-      setTimeout(() => {
-        setMessages([...messages, newMessage, botMessage]);
-      }, 1000);
-
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
       setUserInput(""); // Clear input field
+
+      // Simulate typing delay for the bot
+      setIsTyping(true);
+      const responseText =
+        predefinedResponses[userInput.trim()] ||
+        "Sorry, I didn't understand that. Can you ask another question?";
+
+      setTimeout(() => {
+        const botMessage = { sender: "bot", text: responseText };
+        setMessages((prevMessages) => [...prevMessages, botMessage]);
+        setIsTyping(false);
+      }, 1000);
     }
   };
 
@@ -47,15 +51,22 @@ const ChatBox = () => {
     }
   };
 
+  // Auto-scroll chat body to the latest message
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   // Toggle chat visibility
   const toggleChatBox = () => {
-    setShowChat(!showChat);
+    setShowChat((prev) => !prev);
   };
 
   return (
     <div>
       <button className="chat-toggle-btn" onClick={toggleChatBox}>
-        Chat with us
+        {showChat ? "Close Chat" : "Chat with us"}
       </button>
       {showChat && (
         <div className="chat-box">
@@ -63,7 +74,7 @@ const ChatBox = () => {
             <h3>Chat with us</h3>
             <button onClick={toggleChatBox}>Close</button>
           </div>
-          <div className="chat-body">
+          <div className="chat-body" ref={chatBodyRef}>
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -72,6 +83,11 @@ const ChatBox = () => {
                 {msg.text}
               </div>
             ))}
+            {isTyping && (
+              <div className="message bot-message">
+                <span className="typing-indicator">...</span>
+              </div>
+            )}
           </div>
           <div className="chat-footer">
             <input
@@ -81,7 +97,9 @@ const ChatBox = () => {
               onKeyPress={handleKeyPress}
               placeholder="Ask a question..."
             />
-            <button onClick={handleSendMessage}>Send</button>
+            <button onClick={handleSendMessage} disabled={!userInput.trim()}>
+              Send
+            </button>
           </div>
         </div>
       )}

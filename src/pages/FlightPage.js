@@ -1,24 +1,32 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom"; // Added useLocation
+import Sidebar from "../components/Sidebar"; // Adjust path as needed
+import "../styles/FlightPage.css";
+import "../components/Sidebar.css"; // Ensure sidebar styles are available
+ 
 const API_URL = "http://localhost:1212/api/flights";
-
-const FlightPage = ({ token }) => {
+ 
+const FlightPage = ({ token, onLogout }) => {
   const [flights, setFlights] = useState([]);
   const [error, setError] = useState("");
+  const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
-
+  const location = useLocation(); // Used to access state passed from HomePage
+  const searchCriteria = location.state?.searchCriteria || {}; // Default to empty object if state is null
+ 
   useEffect(() => {
     fetchFlights();
   }, []);
-
+ 
   const fetchFlights = async () => {
     try {
+      // Fetching flights based on search criteria
       const res = await axios.get(API_URL, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        params: searchCriteria, // Passing search criteria as query params
       });
       setFlights(res.data);
     } catch (err) {
@@ -26,65 +34,65 @@ const FlightPage = ({ token }) => {
       setError("❌ Could not load flights.");
     }
   };
-
+ 
   const handleBookClick = (flightId) => {
     navigate(`/booking/${flightId}`);
   };
-
+ 
+  const getFlightDuration = (departure, arrival) => {
+    const dep = new Date(departure);
+    const arr = new Date(arrival);
+    const diffMs = arr - dep;
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours}h ${minutes}m`;
+  };
+ 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>✈️ All Available Flights</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr style={{ backgroundColor: "#f2f2f2" }}>
-            <th style={cellStyle}>Airline</th>
-            <th style={cellStyle}>From</th>
-            <th style={cellStyle}>To</th>
-            <th style={cellStyle}>Departure</th>
-            <th style={cellStyle}>Arrival</th>
-            <th style={cellStyle}>Price</th>
-            <th style={cellStyle}>Action</th>
-          </tr>
-        </thead>
-        <tbody>
+<div className="dashboard-container">
+<Sidebar collapsed={collapsed} setCollapsed={setCollapsed} onLogout={onLogout} />
+<div className="dashboard-main">
+<h2>✈️ Flights Matching Your Search</h2>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+<div className="flight-list">
           {flights.map((flight) => (
-            <tr key={flight.id}>
-              <td style={cellStyle}>{flight.airline}</td>
-              <td style={cellStyle}>{flight.fromAirportName || flight.departureAirportName}</td>
-              <td style={cellStyle}>{flight.toAirportName || flight.arrivalAirportName}</td>
-              <td style={cellStyle}>{new Date(flight.departureTime).toLocaleString()}</td>
-              <td style={cellStyle}>{new Date(flight.arrivalTime).toLocaleString()}</td>
-              <td style={cellStyle}>₹{flight.price.toLocaleString("en-IN")}</td>
-              <td style={cellStyle}>
-                <button
-                  style={buttonStyle}
-                  onClick={() => handleBookClick(flight.id)}
-                >
+<div key={flight.id} className="flight-card">
+<div className="flight-meta">
+<span className="airline-info">{flight.airline}</span>
+</div>
+<div className="flight-times">
+<div className="flight-block">
+<strong>{flight.fromAirportName || flight.departureAirportName}</strong>
+<div>{new Date(flight.departureTime).toLocaleString()}</div>
+</div>
+<div className="flight-middle">
+<div className="flight-path">
+<div className="line"></div>
+<div className="plane-icon">✈</div>
+<div className="line"></div>
+</div>
+<div className="duration">{getFlightDuration(flight.departureTime, flight.arrivalTime)}</div>
+</div>
+<div className="flight-block">
+<strong>{flight.toAirportName || flight.arrivalAirportName}</strong>
+<div>{new Date(flight.arrivalTime).toLocaleString()}</div>
+</div>
+</div>
+<div className="flight-bottom">
+<div className="price-block">
+<div className="label">Price</div>
+<div className="price">₹{flight.price.toLocaleString("en-IN")}</div>
+</div>
+<button className="book-button" onClick={() => handleBookClick(flight.id)}>
                   Book
-                </button>
-              </td>
-            </tr>
+</button>
+</div>
+</div>
           ))}
-        </tbody>
-      </table>
-    </div>
+</div>
+</div>
+</div>
   );
 };
-
-const cellStyle = {
-  border: "1px solid #ccc",
-  padding: "10px",
-  textAlign: "center",
-};
-
-const buttonStyle = {
-  padding: "6px 12px",
-  backgroundColor: "#007bff",
-  color: "#fff",
-  border: "none",
-  borderRadius: "4px",
-  cursor: "pointer",
-};
-
+ 
 export default FlightPage;

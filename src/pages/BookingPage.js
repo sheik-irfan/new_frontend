@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/BookingPage.css";
 import { jsPDF } from "jspdf";
+import { motion } from "framer-motion";
+import "../styles/BookingPage.css"; // Updated CSS file for styling
 
 const API_URL = "http://localhost:1212/api";
 
@@ -187,69 +188,173 @@ const BookingPage = () => {
 
   return (
     <div className="booking-page">
-      <h2>Confirm Your Booking</h2>
+      <motion.h2
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="booking-title"
+      >
+        Confirm Your Booking
+      </motion.h2>
 
       <div className="flight-card">
-        <p>✈️ {flight.flightNumber || flight.airline}</p>
-        <p>{flight.fromAirportName} → {flight.toAirportName}</p>
-        <p>🕐 {new Date(flight.departureTime).toLocaleTimeString()} - {new Date(flight.arrivalTime).toLocaleTimeString()}</p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          ✈️ {flight.flightNumber || flight.airline}
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          {flight.fromAirportName} → {flight.toAirportName}
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          🕐 {new Date(flight.departureTime).toLocaleTimeString()} - {new Date(flight.arrivalTime).toLocaleTimeString()}
+        </motion.p>
         {airplane && (
           <>
-            <p>🛩️ {airplane.airplaneName}</p>
-            <p>📋 Model: {airplane.airplaneModel}</p>
-            <p>🏭 Manufacturer: {airplane.manufacturer}</p>
-            <p>📦 Capacity: {airplane.capacity}</p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              🛩️ {airplane.airplaneName}
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              📋 Model: {airplane.airplaneModel}
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              🏭 Manufacturer: {airplane.manufacturer}
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              📦 Capacity: {airplane.capacity}
+            </motion.p>
           </>
         )}
-        <p>💰 Price: ₹{flight.price}</p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          💰 Price: ₹{flight.price}
+        </motion.p>
       </div>
 
       <div className="wallet-info">
-        <h3>Wallet Balance</h3>
+        <motion.h3
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          Wallet Balance
+        </motion.h3>
         <p>{wallet ? `₹${wallet.balance}` : "Loading wallet..."}</p>
       </div>
 
       <div className="passenger-form">
-        <h3>Passenger Details</h3>
+        <motion.h3
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          Passenger Details
+        </motion.h3>
         <label>
           Number of Passengers:
-          <input type="number" min="1" value={passengerCount} onChange={handlePassengerCountChange} />
+          <input
+            type="number"
+            min="1"
+            value={passengerCount}
+            onChange={handlePassengerCountChange}
+          />
         </label>
 
         {passengerDetails.map((p, i) => (
-          <div key={i} className="passenger-details">
+          <motion.div
+            key={i}
+            className="passenger-details"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
             <h4>Passenger {i + 1}</h4>
-            <input type="text" name="name" placeholder="Name" value={p.name} onChange={(e) => handlePassengerChange(i, e)} />
-            <input type="number" name="age" placeholder="Age" value={p.age} onChange={(e) => handlePassengerChange(i, e)} />
-            <select name="gender" value={p.gender} onChange={(e) => handlePassengerChange(i, e)}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={p.name}
+              onChange={(e) => handlePassengerChange(i, e)}
+            />
+            <input
+              type="number"
+              name="age"
+              placeholder="Age"
+              value={p.age}
+              onChange={(e) => handlePassengerChange(i, e)}
+            />
+            <select
+              name="gender"
+              value={p.gender}
+              onChange={(e) => handlePassengerChange(i, e)}
+            >
               <option value="">Select Gender</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
             </select>
-          </div>
+          </motion.div>
         ))}
       </div>
 
-      {!bookingDetails ? (
-        <button className="confirm-btn" onClick={confirmBooking} disabled={loading}>
-          {loading ? "Booking..." : "✅ Confirm Booking"}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="booking-actions"
+      >
+        <button onClick={confirmBooking} disabled={loading}>
+          {loading ? "Processing..." : "Confirm Booking"}
         </button>
-      ) : (
-        <div className="booking-success">
-          <h3>🎉 Booking Successful!</h3>
+        {bookingDetails && (
+          <>
+            <button onClick={generateTicket}>Download Ticket</button>
+          </>
+        )}
+      </motion.div>
+
+      {bookingDetails && (
+        <motion.div
+          className="confirmation"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h3>Booking Confirmed!</h3>
           <p>Booking ID: {bookingDetails.bookingId}</p>
           <p>Total: ₹{bookingDetails.totalAmount}</p>
           <p>Time: {new Date(bookingDetails.bookingTime).toLocaleString()}</p>
-          <button onClick={generateTicket}>📥 Download Ticket</button>
-          <button onClick={() => navigate("/dashboard")}>⬅ Back to Dashboard</button>
-        </div>
-      )}
-
-      {!bookingDetails && (
-        <button className="back-btn" onClick={() => navigate("/dashboard")}>
-          ⬅ Back to Dashboard
-        </button>
+          <button onClick={generateTicket}>Download Ticket</button>
+        </motion.div>
       )}
     </div>
   );

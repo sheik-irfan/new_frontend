@@ -1,3 +1,4 @@
+// AdminDashboard.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,10 +10,11 @@ const API_URL = "http://localhost:1212/api";
 const AdminDashboard = ({ token: propToken }) => {
   const [flights, setFlights] = useState([]);
   const [airplanes, setAirplanes] = useState([]);
+  const [airports, setAirports] = useState([]);
   const [users, setUsers] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
 
-  // Retrieve token from props or localStorage
   const token = propToken || localStorage.getItem("token");
 
   useEffect(() => {
@@ -21,6 +23,7 @@ const AdminDashboard = ({ token: propToken }) => {
     } else {
       fetchFlights();
       fetchAirplanes();
+      fetchAirports();
       fetchUsers();
     }
     // eslint-disable-next-line
@@ -31,7 +34,6 @@ const AdminDashboard = ({ token: propToken }) => {
       const res = await axios.get(`${API_URL}/flights`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Flights fetched:", res.data);
       setFlights(res.data);
     } catch (err) {
       console.error("Failed to fetch flights:", err.response || err.message);
@@ -43,10 +45,20 @@ const AdminDashboard = ({ token: propToken }) => {
       const res = await axios.get(`${API_URL}/airplanes`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Airplanes fetched:", res.data);
       setAirplanes(res.data);
     } catch (err) {
       console.error("Failed to fetch airplanes:", err.response || err.message);
+    }
+  };
+
+  const fetchAirports = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/airports`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAirports(res.data);
+    } catch (err) {
+      console.error("Failed to fetch airports:", err.response || err.message);
     }
   };
 
@@ -55,16 +67,10 @@ const AdminDashboard = ({ token: propToken }) => {
       const res = await axios.get(`${API_URL}/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Users fetched:", res.data);
       setUsers(res.data);
     } catch (err) {
       console.error("Failed to fetch users:", err.response || err.message);
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
   };
 
   const formatDateTime = (dateTime) => {
@@ -80,21 +86,22 @@ const AdminDashboard = ({ token: propToken }) => {
   };
 
   return (
-    <div className="admin-dashboard animate__animated animate__fadeIn">
-      <aside className="admin-sidebar animate__animated animate__fadeInLeft">
+    <div className={`admin-dashboard animate__animated animate__fadeIn ${sidebarOpen ? "sidebar-open" : ""}`}>
+      {/* Sidebar */}
+      <aside className={`admin-sidebar animate__animated animate__fadeInLeft ${sidebarOpen ? "open" : "closed"}`}>
+        <div className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          {sidebarOpen ? "❮" : "❯"}
+        </div>
         <h2>Admin Panel</h2>
         <ul>
-          {/* <li><Link to="/dashboard">🏠 Main Dashboard</Link></li> */}
-          <li><Link to="/adminflights">✈️ Manage Flights</Link></li>
-          <li><Link to="/adminairplanes">🛫 Manage Airplanes</Link></li>
-          <li><Link to="/adminairports">🛬 Manage Airports</Link></li>
-          <li><Link to="/adminusers">👥 Manage Users</Link></li>
-          <li><Link to="/wallet">💰 Wallets</Link></li>
-          <li><Link to="/bookings">📄 Bookings</Link></li>
-          <li><button className="admin-logout" onClick={handleLogout}>🚪 Logout</button></li>
+          <li><Link to="/adminflights"> Manage Flights</Link></li>
+          <li><Link to="/adminairplanes"> Manage Airplanes</Link></li>
+          <li><Link to="/adminairports"> Manage Airports</Link></li>
+          <li><Link to="/adminusers"> Manage Users</Link></li>
         </ul>
       </aside>
 
+      {/* Main */}
       <main className="admin-main">
         <h1 className="animate__animated animate__fadeInDown">🛠 Admin Dashboard</h1>
 
@@ -105,12 +112,12 @@ const AdminDashboard = ({ token: propToken }) => {
             <p>No flights available.</p>
           ) : (
             flights.map((flight) => (
-              <div key={flight.id || flight._id} className="admin-card">
-                <h4>{flight.airline || "Unknown Airline"}</h4>
-                <p><strong>Route:</strong> {flight.fromAirportName} → {flight.toAirportName}</p>
-                <p><strong>Departure:</strong> {formatDateTime(flight.departureTime)}</p>
+              <div key={flight.flightId || flight.id} className="admin-card">
+                <h4>{flight.airline || flight.flightNumber || "Unknown Airline"}</h4>
+                <p><strong>Route:</strong> {flight.fromAirportName || flight.source} → {flight.toAirportName || flight.destination}</p>
+                <p><strong>Departure:</strong> {formatDateTime(flight.departureTime || flight.departureDate)}</p>
                 <p><strong>Arrival:</strong> {formatDateTime(flight.arrivalTime)}</p>
-                <p><strong>Price:</strong> ₹{flight.price?.toLocaleString()}</p>
+                <p><strong>Price:</strong> ₹{flight.price?.toLocaleString() || "N/A"}</p>
               </div>
             ))
           )}
@@ -132,6 +139,20 @@ const AdminDashboard = ({ token: propToken }) => {
           )}
         </div>
 
+        {/* Airports */}
+        <div className="admin-section">
+          <h3>🛬 All Airports</h3>
+          {airports.length === 0 ? (
+            <p>No airports found.</p>
+          ) : (
+            airports.map((airport) => (
+              <div key={airport.airportId || airport.id} className="admin-card">
+                <h4>{airport.airportName} ({airport.airportCode})</h4>
+              </div>
+            ))
+          )}
+        </div>
+
         {/* Users */}
         <div className="admin-section">
           <h3>👥 All Users</h3>
@@ -142,7 +163,7 @@ const AdminDashboard = ({ token: propToken }) => {
               <div key={user.userId || user.id} className="admin-card">
                 <h4>{user.userName}</h4>
                 <p>Email: {user.userEmail}</p>
-                <p>Role: {user.role}</p>
+                <p>Role: {user.role || user.userole}</p>
               </div>
             ))
           )}

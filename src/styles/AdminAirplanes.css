@@ -174,31 +174,78 @@
 /* Responsive */
 @media (max-width: 768px) {
   .admin-airplanes-container {
-    padding: 3rem 1.5rem;
+      padding: 3rem 1.5rem;
   }
 
   .add-airplane-form {
-    grid-template-columns: 1fr;
+      grid-template-columns: 1fr;
   }
 
   .add-airplane-form button {
-    grid-column: span 1;
+      grid-column: span 1;
   }
 
   .airplanes-list li {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
   }
 
   .airplanes-list li .button-group {
-    width: 100%;
-    justify-content: flex-start;
+      width: 100%;
+      justify-content: flex-start;
   }
 
   .airplanes-list button {
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
   }
 }
 
+/* Sidebar Animation */
+.admin-sidebar {
+  width: 240px;
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 1000;
+}
+
+.admin-sidebar.closed {
+  transform: translateX(-100%);
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+
+.admin-dashboard.sidebar-open .admin-main {
+  margin-left: 30px;
+  transition: margin-left 0.3s ease;
+}
+
+.admin-dashboard .admin-main {
+  transition: margin-left 0.3s ease;
+}
+
+/* Toggle Button */
+.toggle-btn {
+  position: absolute;
+  top: 20px;
+  right: -20px;
+  width: 30px;
+  height: 30px;
+  background-color: #0077b6;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  z-index: 1001;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background-color: #023e8a;
+}

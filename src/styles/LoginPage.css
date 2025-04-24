@@ -1,12 +1,13 @@
+/* Base styling */
 body, html {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #d0f0ff, #fdfdfd);
+  background: linear-gradient(135deg, #d0f0ff, #fdfdfd); /* Same gradient as login */
 }
- 
-/* Centering the login box */
+
+/* Container */
 .auth-container {
   display: flex;
   flex-direction: column;
@@ -19,25 +20,27 @@ body, html {
   backdrop-filter: blur(10px);
   border-radius: 1rem;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-  animation: fadeInScale 0.6s ease-in-out;
+  animation: fadeInScale 0.6s ease-in-out; /* Fade-in effect like the registration page */
 }
- 
+
 /* Title */
 .auth-container h2 {
   font-size: 2rem;
   margin-bottom: 2rem;
   font-weight: 700;
-  color: #0077b6;
+  color: #0077b6; /* Same blue as the registration page */
   text-shadow: 0 2px 4px rgba(0, 119, 182, 0.1);
 }
-.login-form{
+
+/* Form layout */
+.login-form {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
- 
-/* Input Fields */
+
+/* Input fields */
 .login-form input {
   width: 100%;
   padding: 0.9rem 1rem;
@@ -48,29 +51,13 @@ body, html {
   background-color: #f7f9fc;
   transition: 0.3s ease all;
 }
- 
+
 .login-form input:focus {
   border-color: #0077b6;
   box-shadow: 0 0 0 4px rgba(0, 119, 182, 0.15);
   outline: none;
 }
- 
-/* Remember me */
-.remember-me {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  font-size: 0.95rem;
-  color: #333;
-  margin-bottom: 1.5rem;
- 
-}
- 
-.remember-me input {
-  transform: scale(1.1);
-  cursor: pointer;
-}
- 
+
 /* Login Button */
 .btn-login {
   width: 100%;
@@ -85,16 +72,31 @@ body, html {
   transition: all 0.3s ease;
   box-shadow: 0 6px 20px rgba(0, 119, 182, 0.25);
 }
- 
+
 .btn-login:hover {
   background: linear-gradient(to right, #00b4d8, #0077b6);
   transform: translateY(-2px);
 }
- 
+
 .btn-login:active {
   transform: scale(0.98);
 }
- 
+
+/* Remember me */
+.remember-me {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.remember-me input {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
 /* Error Message */
 .error {
   color: #d32f2f;
@@ -102,7 +104,7 @@ body, html {
   font-weight: bold;
   animation: shakeError 0.5s;
 }
- 
+
 /* Animation Keyframes */
 @keyframes fadeInScale {
   0% {
@@ -114,7 +116,7 @@ body, html {
     transform: scale(1) translateY(0);
   }
 }
- 
+
 @keyframes shakeError {
   0% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
@@ -122,20 +124,19 @@ body, html {
   75% { transform: translateX(-5px); }
   100% { transform: translateX(0); }
 }
- 
+
 /* Responsive Design */
 @media (max-width: 480px) {
   .auth-container {
     margin: 3rem 1rem;
     padding: 2rem;
   }
- 
+
   .auth-container h2 {
     font-size: 1.7rem;
   }
- 
+
   .btn-login {
     font-size: 1rem;
   }
 }
- 

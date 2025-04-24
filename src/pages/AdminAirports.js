@@ -1,16 +1,16 @@
-// components/AdminAirports.js
-
 import React, { useEffect, useState } from "react";
 import { getAirports, addAirport, updateAirport, deleteAirport } from "../services/AdminAirportsService";
 import { defaultAirport } from "../models/AdminAirportsModel";
-import "../styles/AdminAirports.css"; // Assuming you have a CSS file for styling
+import { Link } from "react-router-dom"; // Added to match AdminFlights import
+import "../styles/AdminAirports.css"; // Styling
 
 const AdminAirports = ({ token }) => {
   const [airports, setAirports] = useState([]);
   const [filteredAirports, setFilteredAirports] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [newAirport, setNewAirport] = useState({ ...defaultAirport });
-  const [editingCode, setEditingCode] = useState(null); // Store airport code for editing
+  const [editingCode, setEditingCode] = useState(null); // used for PUT updates
+  const [sidebarOpen, setSidebarOpen] = useState(true); // Added the sidebarOpen state
 
   const fetchAirports = async () => {
     try {
@@ -25,9 +25,8 @@ const AdminAirports = ({ token }) => {
   const handleAddOrUpdateAirport = async () => {
     try {
       if (editingCode) {
-        // Use airportCode (e.g., LAX) in the PUT request URL
         await updateAirport(token, editingCode, newAirport);
-        setEditingCode(null); // Reset editing code after update
+        setEditingCode(null);
       } else {
         await addAirport(token, newAirport);
       }
@@ -49,7 +48,7 @@ const AdminAirports = ({ token }) => {
 
   const handleEditAirport = (airport) => {
     setNewAirport(airport);
-    setEditingCode(airport.airportCode); // Set airportCode for editing
+    setEditingCode(airport.airportCode); // uses airportCode as unique identifier
   };
 
   const handleSearch = (query) => {
@@ -69,6 +68,21 @@ const AdminAirports = ({ token }) => {
 
   return (
     <div className="admin-airports-container">
+      {/* Sidebar */}
+      <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
+        <div className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          {sidebarOpen ? "❮" : "❯"}
+        </div>
+        <h2>Admin Panel</h2>
+        <ul>
+          <li><Link to="/admin">Dashboard</Link></li>
+          <li><Link to="/adminflights">Manage Flights</Link></li>
+          <li><Link to="/adminairplanes">Manage Airplanes</Link></li>
+          <li><Link to="/adminairports">Manage Airports</Link></li>
+          <li><Link to="/adminusers">Manage Users</Link></li>
+        </ul>
+      </aside>
+      
       <h2>Manage Airports</h2>
 
       <div className="search-bar">

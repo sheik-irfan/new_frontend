@@ -1,6 +1,5 @@
-// components/AdminFlights.js
-
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { fetchFlights, fetchAirports, fetchAirplanes, addFlight, updateFlight, deleteFlight } from "../services/AdminFlightsService";
 import { defaultFlight } from "../models/AdminFlightsModel";
 import "../styles/AdminFlights.css";
@@ -11,6 +10,7 @@ const AdminFlights = ({ token }) => {
   const [airplanes, setAirplanes] = useState([]);
   const [editingFlightId, setEditingFlightId] = useState(null);
   const [newFlight, setNewFlight] = useState(defaultFlight);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
     if (token) {
@@ -100,98 +100,115 @@ const AdminFlights = ({ token }) => {
   };
 
   return (
-    <div className="admin-flights-container">
-      <h2>Manage Flights</h2>
+    <div className={`admin-dashboard ${sidebarOpen ? "sidebar-open" : ""}`}>
+      {/* Sidebar */}
+      <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
+        <div className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          {sidebarOpen ? "❮" : "❯"}
+        </div>
+        <h2>Admin Panel</h2>
+        <ul>
+          <li><Link to="/admin">Dashboard</Link></li>
+          <li><Link to="/adminflights">Manage Flights</Link></li>
+          <li><Link to="/adminairplanes">Manage Airplanes</Link></li>
+          <li><Link to="/adminairports">Manage Airports</Link></li>
+          <li><Link to="/adminusers">Manage Users</Link></li>
+        </ul>
+      </aside>
 
-      <div className="add-flight-form">
-        <input
-          type="text"
-          placeholder="Airline"
-          value={newFlight.airline}
-          onChange={(e) => setNewFlight({ ...newFlight, airline: e.target.value })}
-        />
+      <main className="admin-main">
+        <h2>Manage Flights</h2>
 
-        <select
-          value={newFlight.airplaneId}
-          onChange={(e) => setNewFlight({ ...newFlight, airplaneId: e.target.value })}
-        >
-          <option value="">Select Airplane</option>
-          {airplanes.map((airplane) => (
-            <option key={airplane.airplaneId} value={airplane.airplaneId}>
-              {airplane.airplaneName} - {airplane.airplaneModel} ({airplane.manufacturer})
-            </option>
-          ))}
-        </select>
+        <div className="add-flight-form">
+          <input
+            type="text"
+            placeholder="Airline"
+            value={newFlight.airline}
+            onChange={(e) => setNewFlight({ ...newFlight, airline: e.target.value })}
+          />
 
-        <input
-          type="datetime-local"
-          value={newFlight.departureTime}
-          onChange={(e) => setNewFlight({ ...newFlight, departureTime: e.target.value })}
-        />
-        <input
-          type="datetime-local"
-          value={newFlight.arrivalTime}
-          onChange={(e) => setNewFlight({ ...newFlight, arrivalTime: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Departure Airport ID"
-          value={newFlight.departureAirportId}
-          onChange={(e) => setNewFlight({ ...newFlight, departureAirportId: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Arrival Airport ID"
-          value={newFlight.arrivalAirportId}
-          onChange={(e) => setNewFlight({ ...newFlight, arrivalAirportId: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Price"
-          value={newFlight.price}
-          onChange={(e) => setNewFlight({ ...newFlight, price: e.target.value })}
-        />
+          <select
+            value={newFlight.airplaneId}
+            onChange={(e) => setNewFlight({ ...newFlight, airplaneId: e.target.value })}
+          >
+            <option value="">Select Airplane</option>
+            {airplanes.map((airplane) => (
+              <option key={airplane.airplaneId} value={airplane.airplaneId}>
+                {airplane.airplaneName} - {airplane.airplaneModel} ({airplane.manufacturer})
+              </option>
+            ))}
+          </select>
 
-        <button
-          onClick={editingFlightId ? handleUpdateFlight : handleAddFlight}
-          className={editingFlightId ? "update-btn" : "add-btn"}
-        >
-          {editingFlightId ? "✅ Update Flight" : "➕ Add Flight"}
-        </button>
+          <input
+            type="datetime-local"
+            value={newFlight.departureTime}
+            onChange={(e) => setNewFlight({ ...newFlight, departureTime: e.target.value })}
+          />
+          <input
+            type="datetime-local"
+            value={newFlight.arrivalTime}
+            onChange={(e) => setNewFlight({ ...newFlight, arrivalTime: e.target.value })}
+          />
+          <input
+            type="number"
+            placeholder="Departure Airport ID"
+            value={newFlight.departureAirportId}
+            onChange={(e) => setNewFlight({ ...newFlight, departureAirportId: e.target.value })}
+          />
+          <input
+            type="number"
+            placeholder="Arrival Airport ID"
+            value={newFlight.arrivalAirportId}
+            onChange={(e) => setNewFlight({ ...newFlight, arrivalAirportId: e.target.value })}
+          />
+          <input
+            type="number"
+            placeholder="Price"
+            value={newFlight.price}
+            onChange={(e) => setNewFlight({ ...newFlight, price: e.target.value })}
+          />
 
-        {editingFlightId && (
-          <button className="cancel-btn" onClick={resetForm}>
-            ❌ Cancel
+          <button
+            onClick={editingFlightId ? handleUpdateFlight : handleAddFlight}
+            className={editingFlightId ? "update-btn" : "add-btn"}
+          >
+            {editingFlightId ? "✅ Update Flight" : "➕ Add Flight"}
           </button>
-        )}
-      </div>
 
-      <div className="flights-list">
-        {flights.map((flight) => {
-          const airplane = getAirplaneById(flight.airplaneId);
-          return (
-            <div key={flight.id} className="flight-card">
-              <div className="flight-details">
-                <h3>✈️ {flight.airline}</h3>
-                <p><strong>From:</strong> {getAirportNameById(flight.departureAirportId)}</p>
-                <p><strong>To:</strong> {getAirportNameById(flight.arrivalAirportId)}</p>
-                <p><strong>Departure:</strong> {flight.departureTime}</p>
-                <p><strong>Arrival:</strong> {flight.arrivalTime}</p>
-                <p>
-                  <strong>Airplane:</strong>{" "}
-                  {airplane ? `${airplane.airplaneName} - ${airplane.airplaneModel} (${airplane.manufacturer})` : `Unknown (ID: ${flight.airplaneId})`}
-                </p>
-                <p><strong>Price:</strong> ₹{flight.price}</p>
-              </div>
+          {editingFlightId && (
+            <button className="cancel-btn" onClick={resetForm}>
+              ❌ Cancel
+            </button>
+          )}
+        </div>
 
-              <div className="action-buttons">
-                <button onClick={() => handleEditFlight(flight)}>✏️ Edit</button>
-                <button onClick={() => handleDeleteFlight(flight.id)}>🗑 Delete</button>
+        <div className="flights-list">
+          {flights.map((flight) => {
+            const airplane = getAirplaneById(flight.airplaneId);
+            return (
+              <div key={flight.id} className="flight-card">
+                <div className="flight-details">
+                  <h3>✈️ {flight.airline}</h3>
+                  <p><strong>From:</strong> {getAirportNameById(flight.departureAirportId)}</p>
+                  <p><strong>To:</strong> {getAirportNameById(flight.arrivalAirportId)}</p>
+                  <p><strong>Departure:</strong> {flight.departureTime}</p>
+                  <p><strong>Arrival:</strong> {flight.arrivalTime}</p>
+                  <p>
+                    <strong>Airplane:</strong>{" "}
+                    {airplane ? `${airplane.airplaneName} - ${airplane.airplaneModel} (${airplane.manufacturer})` : `Unknown (ID: ${flight.airplaneId})`}
+                  </p>
+                  <p><strong>Price:</strong> ₹{flight.price}</p>
+                </div>
+
+                <div className="action-buttons">
+                  {/* <button onClick={() => handleEditFlight(flight)}>✏️ Edit</button> */}
+                  <button onClick={() => handleDeleteFlight(flight.id)}>🗑 Delete</button>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      </main>
     </div>
   );
 };

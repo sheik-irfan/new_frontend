@@ -1,32 +1,107 @@
+/* Layout Wrapper for Booking History Page */
+.booking-history-wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(to bottom right, #e0f7fa, #ffffff);
+}
+
+/* Sidebar Styling (optional override if needed) */
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  background-color: #f8f9fa;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+/* Main Booking Content */
+.booking-history-card {
+  flex: 1;
+  padding: 2rem;
+  overflow: visible;
+}
+
+/* Booking Card Styles */
+.booking-card {
+  background-color: #f9fbff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInCard 0.4s ease;
+}
+
+.booking-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.booking-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+.booking-card p {
+  font-size: 0.95rem;
+  color: #555;
+  margin: 5px 0;
+}
+
+/* Cancel Button */
+.cancel-btn {
+  float: right;
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 3px 10px rgba(220, 53, 69, 0.2);
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.cancel-btn:hover {
+  background: #b52a36;
+  transform: scale(1.05);
+  box-shadow: 0 5px 14px rgba(181, 42, 54, 0.3);
+}
+
+/* Sort Button */
 .sort-btn {
-    margin-bottom: 1rem;
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.3s ease;
+  margin-bottom: 1.2rem;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.sort-btn:hover {
+  background: #0056b3;
+  transform: scale(1.03);
+  box-shadow: 0 6px 16px rgba(0, 86, 179, 0.3);
+}
+
+/* Animation */
+@keyframes fadeInCard {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
-  .sort-btn:hover {
-    background: #0056b3;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .cancel-btn {
-    float: right;
-    background: #dc3545;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.3s ease;
-  }
-  
-  .cancel-btn:hover {
-    background: #b52a36;
-  }
-  
+}

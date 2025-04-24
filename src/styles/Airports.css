@@ -1,28 +1,74 @@
+ /* Airports.css
 .airports-container {
-    padding: 2rem;
-  }
-  
-  .airport-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .airport-card {
-    margin: 1rem 0;
-    padding: 1rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    background: #f9f9f9;
-    transition: all 0.3s ease;
-  }
-  
-  .airport-card:hover {
-    transform: scale(1.02);
-    background-color: #eef7ff;
-  }
-  
-  .error-msg {
-    color: red;
-    font-weight: bold;
-  }
-  
+  display: flex;
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, #d0f0ff, #fdfdfd);
+  animation: fadeIn 0.6s ease-in;
+}
+
+.main-content {
+  flex-grow: 1;
+  margin-left: 250px; /* Sidebar width 
+  padding: 2rem;
+}
+
+.airports-container h2 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.airport-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.airport-card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.airport-card:hover {
+  transform: scale(1.02);
+  background-color: #eaf6ff;
+  box-shadow: 0 10px 20px rgba(0, 123, 255, 0.1);
+}
+
+.airport-meta {
+  font-size: 14px;
+  color: #555;
+}
+
+.airport-details {
+  font-size: 13px;
+  color: #777;
+}
+
+.error-msg {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Custom Animations 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+*/

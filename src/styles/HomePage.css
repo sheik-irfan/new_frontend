@@ -181,3 +181,58 @@ button:hover {
 .airline-logos img {
   height: 40px;
 }
+/* Date input specific style */
+.input-group input[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background: white;
+  color: #333;
+  font-size: 14px;
+}
+ 
+/* Trip type radio group container */
+.trip-type-options {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 10px;
+}
+ 
+/* Radio buttons style */
+.trip-type-options label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  color: #333;
+}
+ 
+.trip-type-options input[type="radio"] {
+  accent-color: #1d3557;
+  width: 16px;
+  height: 16px;
+}
+ 
+/* Responsive improvements for search form */
+.search-box {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+ 
+@media (max-width: 768px) {
+  .search-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+ 
+  .input-group {
+    width: 100%;
+  }
+ 
+  .trip-type-options {
+    justify-content: center;
+  }
+}

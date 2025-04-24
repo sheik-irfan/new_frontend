@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/BookingHistoryPage.css";
+import Sidebar from "../components/Sidebar"; // Adjust path as needed
+import "../components/Sidebar.css"; // Ensure sidebar styles are available
 
 const API_URL = "http://localhost:1212/api";
 
 const BookingHistoryPage = ({ token }) => {
+  const [collapsed, setCollapsed] = useState(false);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortOrder, setSortOrder] = useState("desc");
@@ -82,6 +85,7 @@ const BookingHistoryPage = ({ token }) => {
 
   return (
     <div className="booking-history-wrapper">
+      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} onLogout={() => {}} /> {/* or remove if not needed */}
       <div className="booking-history-card">
         <h2>Booking History</h2>
         <button className="sort-btn" onClick={toggleSortOrder}>
@@ -96,29 +100,30 @@ const BookingHistoryPage = ({ token }) => {
               const { flight, airplane } = booking;
 
               return (
-                <li key={booking.bookingId}>
-                  {flight ? (
-                    <>
-                      <h3>✈️ {flight.flightNumber || flight.airline}</h3>
-                      <p>{flight.fromAirportName} → {flight.toAirportName}</p>
-                      <p>
-                        📅 {new Date(flight.departureTime).toLocaleDateString()} | 🕐{" "}
-                        {new Date(flight.departureTime).toLocaleTimeString()} -{" "}
-                        {new Date(flight.arrivalTime).toLocaleTimeString()}
-                      </p>
-                      <p>💺 Airplane ID: {flight.airplaneId}</p>
-                      {airplane && <p>🛫 Airplane Model: {airplane.airplaneModel}</p>}
-                      <p>💰 Price: ₹{booking.totalAmount}</p>
-                      <p>🧾 Booking ID: {booking.bookingId}</p>
-                      <p>📅 Booked on: {new Date(booking.bookingTime).toLocaleString()}</p>
-                    </>
-                  ) : (
-                    <p>❌ Flight details unavailable</p>
-                  )}
-                  <button className="cancel-btn" onClick={() => cancelBooking(booking.bookingId)}>
-                    Cancel
-                  </button>
-                </li>
+                <div className="booking-card" key={booking.bookingId}>
+                {flight ? (
+                  <>
+                    <h3>✈️ {flight.flightNumber || flight.airline}</h3>
+                    <p>{flight.fromAirportName} → {flight.toAirportName}</p>
+                    <p>
+                      📅 {new Date(flight.departureTime).toLocaleDateString()} | 🕐{" "}
+                      {new Date(flight.departureTime).toLocaleTimeString()} -{" "}
+                      {new Date(flight.arrivalTime).toLocaleTimeString()}
+                    </p>
+                    <p>💺 Airplane ID: {flight.airplaneId}</p>
+                    {airplane && <p>🛫 Airplane Model: {airplane.airplaneModel}</p>}
+                    <p>💰 Price: ₹{booking.totalAmount}</p>
+                    <p>🧾 Booking ID: {booking.bookingId}</p>
+                    <p>📅 Booked on: {new Date(booking.bookingTime).toLocaleString()}</p>
+                  </>
+                ) : (
+                  <p>❌ Flight details unavailable</p>
+                )}
+                <button className="cancel-btn" onClick={() => cancelBooking(booking.bookingId)}>
+                  Cancel
+                </button>
+              </div>
+              
               );
             })}
           </ul>

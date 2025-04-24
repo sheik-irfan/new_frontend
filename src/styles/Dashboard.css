@@ -1,59 +1,61 @@
-/* Sidebar wrapper */
+/* Scoped CSS for Dashboard */
+ 
+/* Wrapper styling */
 .dashboard-wrapper {
   display: flex;
-  height: 100vh;
-}
-
-/* Sidebar */
-.sidebar {
-  width: 250px;
-  background-color: #111;
-  color: white;
-  padding: 1rem;
-  transition: width 0.3s ease;
-  overflow-x: hidden;
-}
-
-.sidebar.collapsed {
-  width: 80px;
-}
-
-.sidebar .toggle-btn {
-  background: none;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar li {
-  margin: 1rem 0;
-}
-
-.sidebar a, .sidebar button {
-  color: white;
-  text-decoration: none;
-  font-size: 1rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: block;
-  text-align: left;
-}
-
-.logout-btn {
-  color: crimson;
-}
-
-/* Main dashboard content */
-.dashboard-main {
-  flex-grow: 1;
-  padding: 2rem;
-  overflow-y: auto;
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #f7f9fc, #eaeff5);
+  font-family: 'Arial', sans-serif;
 }
  
+.dashboard-main {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+ 
+/* Welcome Section Styling */
+.dashboard-wrapper .welcome-section {
+  background-color: #ffffff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+}
+ 
+.dashboard-wrapper .welcome-section h1 {
+  font-size: 2rem;
+  color: #333333;
+}
+ 
+.dashboard-wrapper .welcome-section p {
+  font-size: 1.1rem;
+  color: #666666;
+  margin-top: 10px;
+}
+ 
+/* Button Styling */
+.dashboard-wrapper .welcome-section .navigate-button {
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+ 
+.dashboard-wrapper .welcome-section .navigate-button:hover {
+  background-color: #0056b3;
+}
+ 
+.dashboard-wrapper .welcome-section .navigate-button:active {
+  transform: scale(0.95);
+}

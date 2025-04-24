@@ -1,18 +1,21 @@
-// components/AdminUsers.js
-
 import React, { useEffect, useState } from "react";
-import { fetchUsers } from "../services/AdminUsersService";
-import { defaultUser } from "../models/UserModel";
-import "../styles/AdminUsers.css"; // Optional: Make sure this file exists and is imported
+import axios from "axios";
+import { Link } from "react-router-dom";
+import "../styles/AdminUsers.css"; 
+
+const API_URL = "http://localhost:1212/api";
 
 const AdminUsers = ({ token }) => {
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(true); // Sidebar toggle state
 
-  const fetchUsersData = async () => {
+  const fetchUsers = async () => {
     try {
-      const res = await fetchUsers(token);
+      const res = await axios.get(`${API_URL}/users`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setUsers(res.data);
       setFilteredUsers(res.data);
     } catch (err) {
@@ -23,53 +26,55 @@ const AdminUsers = ({ token }) => {
   const handleSearch = (query) => {
     setSearchQuery(query);
     const filtered = users.filter((user) =>
-      Object.values(user)
-        .join(" ")
-        .toLowerCase()
-        .includes(query.toLowerCase())
+      Object.values(user).join(" ").toLowerCase().includes(query.toLowerCase())
     );
     setFilteredUsers(filtered);
   };
 
   useEffect(() => {
-    if (token) {
-      fetchUsersData();
-    }
-  }, [token]);
+    fetchUsers();
+  }, []);
 
   return (
-    <div className="admin-users-container">
-      <h2>👥 Manage Users</h2>
+    <div className={`admin-dashboard ${sidebarOpen ? "sidebar-open" : ""}`}>
+      {/* Sidebar with toggle arrow */}
+      <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
+        <div className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          {sidebarOpen ? "❮" : "❯"}
+        </div>
+        <h2>Admin Panel</h2>
+        <ul>
+          <li><Link to="/admin">Dashboard</Link></li>
+          <li><Link to="/adminflights">Manage Flights</Link></li>
+          <li><Link to="/adminairplanes">Manage Airplanes</Link></li>
+          <li><Link to="/adminairports">Manage Airports</Link></li>
+          <li><Link to="/adminusers">Manage Users</Link></li>
+        </ul>
+      </aside>
 
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search users..."
-          value={searchQuery}
-          onChange={(e) => handleSearch(e.target.value)}
-        />
-      </div>
+      <main className="admin-main">
+        <h1>Manage Users</h1>
 
-      <ul className="users-list">
-        {filteredUsers.map((user) => (
-          <li key={user.userId} className="user-card">
-            <p><strong>👤 Name:</strong> {user.userName}</p>
-            <p><strong>📧 Email:</strong> {user.userEmail}</p>
-            <p><strong>⚧ Gender:</strong> {user.userGender}</p>
-            <p>
-              <strong>🛡️ Role:</strong>{" "}
-              <span
-                style={{
-                  color: user.userRole === "ADMIN" ? "crimson" : "darkgreen",
-                  fontWeight: "bold",
-                }}
-              >
-                {user.userRole}
-              </span>
-            </p>
-          </li>
-        ))}
-      </ul>
+        <div className="admin-section">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search users..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+            />
+          </div>
+
+          <ul className="users-list">
+            {filteredUsers.map((user) => (
+              <li key={user.userId}>
+                👤 <strong>{user.userName}</strong><br />
+                📧 {user.userEmail} | ⚧ {user.userGender} | 🛡️ {user.userRole}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </main>
     </div>
   );
 };
