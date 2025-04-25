@@ -65,7 +65,7 @@ const Navbar = ({ user, onLogout }) => {
 
       {showDropdown && (
         <div className={`dropdown animate__animated ${animationClass}`}>
-          <span className="glow-text rainbow-text">✨ Sheik Irfan ✨</span>
+          <span className="glow-text rainbow-text">✨ Catalyst Coders ✨</span>
         </div>
       )}
 

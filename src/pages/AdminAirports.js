@@ -3,6 +3,7 @@ import { getAirports, addAirport, updateAirport, deleteAirport } from "../servic
 import { defaultAirport } from "../models/AdminAirportsModel";
 import { Link } from "react-router-dom"; // Added to match AdminFlights import
 import "../styles/AdminAirports.css"; // Styling
+import AdminSidebar from "../components/AdminSidebar"; // Import AdminSidebar component
 
 const AdminAirports = ({ token }) => {
   const [airports, setAirports] = useState([]);
@@ -10,7 +11,7 @@ const AdminAirports = ({ token }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [newAirport, setNewAirport] = useState({ ...defaultAirport });
   const [editingCode, setEditingCode] = useState(null); // used for PUT updates
-  const [sidebarOpen, setSidebarOpen] = useState(true); // Added the sidebarOpen state
+   const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // State for sidebar toggle
 
   const fetchAirports = async () => {
     try {
@@ -39,10 +40,17 @@ const AdminAirports = ({ token }) => {
 
   const handleDeleteAirport = async (code) => {
     try {
-      await deleteAirport(token, code);
-      fetchAirports();
+      // Add confirmation dialog
+      const isConfirmed = window.confirm(`Are you sure you want to delete airport ${code}? This action cannot be undone.`);
+      
+      if (isConfirmed) {
+        await deleteAirport(token, code);
+        fetchAirports();
+        alert(`Airport ${code} deleted successfully!`);
+      }
     } catch (err) {
       alert("Failed to delete airport");
+      console.error(err);
     }
   };
 
@@ -67,89 +75,95 @@ const AdminAirports = ({ token }) => {
   }, [token]);
 
   return (
-    <div className="admin-airports-container">
+    <div className={`admin-dashboard ${sidebarCollapsed ? "sidebar-collapsed" : "sidebar-expanded"}`}>
       {/* Sidebar */}
-      <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
-        <div className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
-          {sidebarOpen ? "❮" : "❯"}
-        </div>
-        <h2>Admin Panel</h2>
-        <ul>
-          <li><Link to="/admin">Dashboard</Link></li>
-          <li><Link to="/adminflights">Manage Flights</Link></li>
-          <li><Link to="/adminairplanes">Manage Airplanes</Link></li>
-          <li><Link to="/adminairports">Manage Airports</Link></li>
-          <li><Link to="/adminusers">Manage Users</Link></li>
-        </ul>
-      </aside>
-      
-      <h2>Manage Airports</h2>
-
-      <div className="search-bar">
+      <AdminSidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
+  
+      {/* Main Content */}
+      <main className="admin-main">
+        <h2>Manage Airports</h2>
+  
+        {/* Search Bar */}
         <input
           type="text"
           placeholder="Search airports..."
           value={searchQuery}
           onChange={(e) => handleSearch(e.target.value)}
+          style={{
+            padding: "0.8rem",
+            borderRadius: "0.7rem",
+            border: "1px solid #90e0ef",
+            width: "100%",
+            marginBottom: "1.5rem",
+            backgroundColor: "#f0f9ff"
+          }}
         />
-      </div>
-
-      <div className="add-airport-form">
-        <input
-          type="text"
-          placeholder="Airport Name"
-          value={newAirport.airportName}
-          onChange={(e) =>
-            setNewAirport({ ...newAirport, airportName: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          placeholder="Code"
-          value={newAirport.airportCode}
-          onChange={(e) =>
-            setNewAirport({ ...newAirport, airportCode: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          placeholder="City"
-          value={newAirport.airportCity}
-          onChange={(e) =>
-            setNewAirport({ ...newAirport, airportCity: e.target.value })
-          }
-        />
-        <input
+  
+        {/* Add / Update Form */}
+        <div className="add-flight-form">
+          <input
+            type="text"
+            placeholder="Airport Code"
+            value={newAirport.airportCode}
+            onChange={(e) => setNewAirport({ ...newAirport, airportCode: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="Airport Name"
+            value={newAirport.airportName}
+            onChange={(e) => setNewAirport({ ...newAirport, airportName: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="City"
+            value={newAirport.airportCity}
+            onChange={(e) => setNewAirport({ ...newAirport, airportCity: e.target.value })}
+          />
+           <input
           type="text"
           placeholder="State"
           value={newAirport.airportState}
           onChange={(e) =>
             setNewAirport({ ...newAirport, airportState: e.target.value })
           }
-        />
-        <input
-          type="text"
-          placeholder="Country"
-          value={newAirport.airportCountry}
-          onChange={(e) =>
-            setNewAirport({ ...newAirport, airportCountry: e.target.value })
-          }
-        />
-        <button onClick={handleAddOrUpdateAirport}>
-          {editingCode ? "Update Airport" : "Add Airport"}
-        </button>
-      </div>
-
-      <ul className="airports-list">
-        {filteredAirports.map((airport) => (
-          <li key={airport.airportCode}>
-            🛫 {airport.airportName} ({airport.airportCode}) - {airport.airportCity},{" "}
-            {airport.airportState}, {airport.airportCountry}
-            <button onClick={() => handleEditAirport(airport)}>✏️ Edit</button>
-            <button onClick={() => handleDeleteAirport(airport.airportCode)}>🗑 Delete</button>
-          </li>
-        ))}
-      </ul>
+          />
+          <input
+            type="text"
+            placeholder="Country"
+            value={newAirport.airportCountry}
+            onChange={(e) => setNewAirport({ ...newAirport, airportCountry: e.target.value })}
+          />
+          <button onClick={handleAddOrUpdateAirport}>
+            {editingCode ? "✅ Update Airport" : "➕ Add Airport"}
+          </button>
+          {editingCode && (
+            <button className="cancel-btn" onClick={() => {
+              setNewAirport({ ...defaultAirport });
+              setEditingCode(null);
+            }}>
+              ❌ Cancel
+            </button>
+          )}
+        </div>
+  
+        {/* Airports List */}
+        <div className="flights-list">
+          {filteredAirports.map((airport) => (
+            <div key={airport.airportCode} className="flight-card">
+              <div className="flight-details">
+                <h3>🛬 {airport.airportName}</h3>
+                <p><strong>Code:</strong> {airport.airportCode}</p>
+                <p><strong>City:</strong> {airport.airportCity}</p>
+                <p><strong>Country:</strong> {airport.airportCountry}</p>
+              </div>
+              <div className="action-buttons">
+                <button onClick={() => handleEditAirport(airport)}>✏️ Edit</button>
+                <button onClick={() => handleDeleteAirport(airport.airportCode)}>🗑 Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
     </div>
   );
 };

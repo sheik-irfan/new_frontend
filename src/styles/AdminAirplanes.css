@@ -208,6 +208,7 @@
   transition: transform 0.3s ease;
   position: relative;
   z-index: 1000;
+  overflow: visible;
 }
 
 .admin-sidebar.closed {
@@ -216,6 +217,8 @@
   left: 0;
   top: 0;
   height: 100%;
+  overflow: hidden;
+  right: -30px;
 }
 
 .admin-dashboard.sidebar-open .admin-main {
@@ -230,8 +233,8 @@
 /* Toggle Button */
 .toggle-btn {
   position: absolute;
-  top: 20px;
-  right: -20px;
+  top: 90px;
+  right: -30px;
   width: 30px;
   height: 30px;
   background-color: #0077b6;
@@ -244,6 +247,7 @@
   font-size: 1.2rem;
   z-index: 1001;
   transition: background-color 0.3s ease;
+  
 }
 
 .toggle-btn:hover {

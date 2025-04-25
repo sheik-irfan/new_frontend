@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import "../styles/AdminAirplanes.css";
 import "animate.css";
+import AdminSidebar from "../components/AdminSidebar";
 
 const API_URL = "http://localhost:1212/api";
 
@@ -17,7 +18,8 @@ const AdminAirplanes = ({ token }) => {
   });
   const [editAirplane, setEditAirplane] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const fetchAirplanes = async () => {
     try {
@@ -34,7 +36,21 @@ const AdminAirplanes = ({ token }) => {
     fetchAirplanes();
   }, []);
 
+  const validateInputs = (data) => {
+    const newErrors = {};
+    if (data.capacity < 0) {
+      newErrors.capacity = "Capacity cannot be negative";
+    }
+    if (data.capacity === "") {
+      newErrors.capacity = "Capacity is required";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleAddAirplane = async () => {
+    if (!validateInputs(newAirplane)) return;
+    
     try {
       await axios.post(`${API_URL}/airplanes`, newAirplane, {
         headers: { Authorization: `Bearer ${token}` },
@@ -55,9 +71,12 @@ const AdminAirplanes = ({ token }) => {
   const handleEditClick = (airplane) => {
     setEditAirplane(airplane);
     setIsEditing(true);
+    setErrors({});
   };
 
   const handleUpdateAirplane = async () => {
+    if (!validateInputs(editAirplane)) return;
+    
     try {
       await axios.put(`${API_URL}/airplanes/${editAirplane.airplaneId}`, editAirplane, {
         headers: { Authorization: `Bearer ${token}` },
@@ -72,33 +91,40 @@ const AdminAirplanes = ({ token }) => {
 
   const handleDeleteAirplane = async (id) => {
     try {
-      await axios.delete(`${API_URL}/airplanes/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      fetchAirplanes();
+      const airplaneToDelete = airplanes.find(plane => plane.airplaneId === id);
+      const isConfirmed = window.confirm(
+        `Are you sure you want to delete airplane ${airplaneToDelete.airplaneName} (${airplaneToDelete.airplaneNumber})?\n\n` +
+        `Model: ${airplaneToDelete.airplaneModel}\n` +
+        `Manufacturer: ${airplaneToDelete.manufacturer}\n\n` +
+        `This action cannot be undone.`
+      );
+      
+      if (isConfirmed) {
+        await axios.delete(`${API_URL}/airplanes/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        fetchAirplanes();
+        alert(`Airplane ${airplaneToDelete.airplaneName} (${airplaneToDelete.airplaneNumber}) deleted successfully!`);
+      }
     } catch (err) {
       alert("Failed to delete airplane");
+      console.error(err);
+    }
+  };
+
+  const handleCapacityChange = (e, isEditing) => {
+    const value = Math.max(0, parseInt(e.target.value) || 0); // Ensure value is not negative
+    if (isEditing) {
+      setEditAirplane({ ...editAirplane, capacity: value });
+    } else {
+      setNewAirplane({ ...newAirplane, capacity: value });
     }
   };
 
   return (
-    <div className={`admin-dashboard ${sidebarOpen ? "sidebar-open" : ""}`}>
-      {/* Sidebar */}
-      <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
-        <div className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
-          {sidebarOpen ? "❮" : "❯"}
-        </div>
-        <h2>Admin Panel</h2>
-        <ul>
-          <li><Link to="/admin">Dashboard</Link></li>
-          <li><Link to="/adminflights">Manage Flights</Link></li>
-          <li><Link to="/adminairplanes">Manage Airplanes</Link></li>
-          <li><Link to="/adminairports">Manage Airports</Link></li>
-          <li><Link to="/adminusers">Manage Users</Link></li>
-        </ul>
-      </aside>
+    <div className={`admin-dashboard ${sidebarCollapsed ? "sidebar-collapsed" : "sidebar-expanded"}`}>
+      <AdminSidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
 
-      {/* Main Content */}
       <main className="admin-main">
         <h1 className="animate__animated animate__fadeInDown">Manage Airplanes</h1>
 
@@ -148,15 +174,21 @@ const AdminAirplanes = ({ token }) => {
             <input
               type="number"
               placeholder="Capacity"
+              min="0"
               value={isEditing ? editAirplane.capacity : newAirplane.capacity}
-              onChange={(e) =>
-                isEditing
-                  ? setEditAirplane({ ...editAirplane, capacity: e.target.value })
-                  : setNewAirplane({ ...newAirplane, capacity: e.target.value })
-              }
+              onChange={(e) => handleCapacityChange(e, isEditing)}
             />
+            {errors.capacity && <div className="error-message">{errors.capacity}</div>}
+            
             {isEditing ? (
-              <button onClick={handleUpdateAirplane}>Update</button>
+              <>
+                <button onClick={handleUpdateAirplane}>Update</button>
+                <button onClick={() => {
+                  setIsEditing(false);
+                  setEditAirplane(null);
+                  setErrors({});
+                }}>Cancel</button>
+              </>
             ) : (
               <button onClick={handleAddAirplane}>Add Airplane</button>
             )}

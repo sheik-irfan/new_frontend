@@ -1,38 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { fetchFlights, fetchAirports, fetchAirplanes, addFlight, updateFlight, deleteFlight } from "../services/AdminFlightsService";
+import {
+  fetchFlights,
+  fetchAirports,
+  fetchAirplanes,
+  addFlight,
+  updateFlight,
+  deleteFlight,
+} from "../services/AdminFlightsService";
 import { defaultFlight } from "../models/AdminFlightsModel";
 import "../styles/AdminFlights.css";
-
+import AdminSidebar from "../components/AdminSidebar";
+ 
 const AdminFlights = ({ token }) => {
   const [flights, setFlights] = useState([]);
   const [airports, setAirports] = useState([]);
   const [airplanes, setAirplanes] = useState([]);
   const [editingFlightId, setEditingFlightId] = useState(null);
   const [newFlight, setNewFlight] = useState(defaultFlight);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
+   const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // State for sidebar toggle
+ 
   useEffect(() => {
     if (token) {
       fetchFlightsData();
     }
   }, [token]);
-
+ 
   const fetchFlightsData = async () => {
     try {
       const flightRes = await fetchFlights(token);
       setFlights(flightRes.data);
-
+ 
       const airportRes = await fetchAirports(token);
       setAirports(airportRes.data);
-
+ 
       const airplaneRes = await fetchAirplanes(token);
       setAirplanes(airplaneRes.data);
     } catch (err) {
       console.error("Failed to fetch data:", err);
     }
   };
-
+ 
   const handleAddFlight = async () => {
     try {
       const flightToSend = {
@@ -42,7 +49,7 @@ const AdminFlights = ({ token }) => {
         arrivalAirportId: parseInt(newFlight.arrivalAirportId),
         price: parseFloat(newFlight.price),
       };
-
+ 
       await addFlight(token, flightToSend);
       fetchFlightsData();
       resetForm();
@@ -51,74 +58,39 @@ const AdminFlights = ({ token }) => {
       console.error(err);
     }
   };
-
-  const handleEditFlight = (flight) => {
-    setNewFlight({ ...flight });
-    setEditingFlightId(flight.id);
-  };
-
-  const handleUpdateFlight = async () => {
-    try {
-      const updatedFlight = {
-        ...newFlight,
-        airplaneId: parseInt(newFlight.airplaneId),
-        departureAirportId: parseInt(newFlight.departureAirportId),
-        arrivalAirportId: parseInt(newFlight.arrivalAirportId),
-        price: parseFloat(newFlight.price),
-      };
-
-      await updateFlight(token, editingFlightId, updatedFlight);
-      fetchFlightsData();
-      resetForm();
-    } catch (err) {
-      alert("Failed to update flight");
-      console.error(err);
-    }
-  };
-
+ 
   const handleDeleteFlight = async (id) => {
+    const confirmed = window.confirm("Are you sure you want to delete this flight?");
+    if (!confirmed) return;
+  
     try {
       await deleteFlight(token, id);
+      alert("Flight deleted successfully.");
       fetchFlightsData();
     } catch (err) {
       alert("Failed to delete flight");
     }
-  };
-
+  };  
+ 
   const resetForm = () => {
     setNewFlight(defaultFlight);
     setEditingFlightId(null);
   };
-
-  const getAirportNameById = (id) => {
-    const airport = airports.find((a) => a.id === id);
-    return airport ? airport.airportName : "Unknown Airport";
-  };
-
+ 
   const getAirplaneById = (id) => {
     return airplanes.find((plane) => plane.airplaneId === id);
   };
-
+ 
   return (
-    <div className={`admin-dashboard ${sidebarOpen ? "sidebar-open" : ""}`}>
+    <div className={`admin-dashboard ${sidebarCollapsed ? "sidebar-collapsed" : "sidebar-expanded"}`}>
       {/* Sidebar */}
-      <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
-        <div className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
-          {sidebarOpen ? "❮" : "❯"}
-        </div>
-        <h2>Admin Panel</h2>
-        <ul>
-          <li><Link to="/admin">Dashboard</Link></li>
-          <li><Link to="/adminflights">Manage Flights</Link></li>
-          <li><Link to="/adminairplanes">Manage Airplanes</Link></li>
-          <li><Link to="/adminairports">Manage Airports</Link></li>
-          <li><Link to="/adminusers">Manage Users</Link></li>
-        </ul>
-      </aside>
-
+      <AdminSidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
+  
+      {/* Main Content */}
       <main className="admin-main">
         <h2>Manage Flights</h2>
-
+  
+        {/* Add / Update Form */}
         <div className="add-flight-form">
           <input
             type="text"
@@ -126,7 +98,6 @@ const AdminFlights = ({ token }) => {
             value={newFlight.airline}
             onChange={(e) => setNewFlight({ ...newFlight, airline: e.target.value })}
           />
-
           <select
             value={newFlight.airplaneId}
             onChange={(e) => setNewFlight({ ...newFlight, airplaneId: e.target.value })}
@@ -138,7 +109,6 @@ const AdminFlights = ({ token }) => {
               </option>
             ))}
           </select>
-
           <input
             type="datetime-local"
             value={newFlight.departureTime}
@@ -167,21 +137,22 @@ const AdminFlights = ({ token }) => {
             value={newFlight.price}
             onChange={(e) => setNewFlight({ ...newFlight, price: e.target.value })}
           />
-
+  
           <button
             onClick={editingFlightId ? handleUpdateFlight : handleAddFlight}
             className={editingFlightId ? "update-btn" : "add-btn"}
           >
             {editingFlightId ? "✅ Update Flight" : "➕ Add Flight"}
           </button>
-
+  
           {editingFlightId && (
             <button className="cancel-btn" onClick={resetForm}>
               ❌ Cancel
             </button>
           )}
         </div>
-
+  
+        {/* Flights List */}
         <div className="flights-list">
           {flights.map((flight) => {
             const airplane = getAirplaneById(flight.airplaneId);
@@ -189,19 +160,20 @@ const AdminFlights = ({ token }) => {
               <div key={flight.id} className="flight-card">
                 <div className="flight-details">
                   <h3>✈️ {flight.airline}</h3>
-                  <p><strong>From:</strong> {getAirportNameById(flight.departureAirportId)}</p>
-                  <p><strong>To:</strong> {getAirportNameById(flight.arrivalAirportId)}</p>
+                  <p><strong>From:</strong> {flight.fromAirportName}</p>
+                  <p><strong>To:</strong> {flight.toAirportName}</p>
                   <p><strong>Departure:</strong> {flight.departureTime}</p>
                   <p><strong>Arrival:</strong> {flight.arrivalTime}</p>
                   <p>
                     <strong>Airplane:</strong>{" "}
-                    {airplane ? `${airplane.airplaneName} - ${airplane.airplaneModel} (${airplane.manufacturer})` : `Unknown (ID: ${flight.airplaneId})`}
+                    {airplane
+                      ? `${airplane.airplaneName} - ${airplane.airplaneModel} (${airplane.manufacturer})`
+                      : `Unknown (ID: ${flight.airplaneId})`}
                   </p>
                   <p><strong>Price:</strong> ₹{flight.price}</p>
                 </div>
-
+  
                 <div className="action-buttons">
-                  {/* <button onClick={() => handleEditFlight(flight)}>✏️ Edit</button> */}
                   <button onClick={() => handleDeleteFlight(flight.id)}>🗑 Delete</button>
                 </div>
               </div>
@@ -210,7 +182,7 @@ const AdminFlights = ({ token }) => {
         </div>
       </main>
     </div>
-  );
+  );  
 };
-
+ 
 export default AdminFlights;

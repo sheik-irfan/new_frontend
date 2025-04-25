@@ -1,107 +1,205 @@
-/* Layout Wrapper for Booking History Page */
+/* Wrapper Layout */
 .booking-history-wrapper {
   display: flex;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
-  background: linear-gradient(to bottom right, #e0f7fa, #ffffff);
+  min-height: 100vh;
+  background: linear-gradient(to right, #f8fbff, #eef2f7);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Sidebar Styling (optional override if needed) */
-.sidebar {
-  width: 240px;
-  min-width: 240px;
-  background-color: #f8f9fa;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-}
-
-/* Main Booking Content */
+/* Main content area */
 .booking-history-card {
   flex: 1;
   padding: 2rem;
-  overflow: visible;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease;
 }
 
-/* Booking Card Styles */
+.booking-history-card h2 {
+  font-size: 1.75rem;
+  color: #343a40;
+  margin-bottom: 1.5rem;
+}
+
+/* Sort button */
+.sort-btn {
+  padding: 0.5rem 1rem;
+  background-color: #6c63ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.sort-btn:hover {
+  background-color: #574fd6;
+}
+
+/* Booking cards */
 .booking-card {
-  background-color: #f9fbff;
+  background: white;
   border-radius: 16px;
   padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   margin-bottom: 1.5rem;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: fadeInCard 0.4s ease;
+  transition: transform 0.3s ease;
 }
 
 .booking-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
 .booking-card h3 {
-  font-size: 1.25rem;
+  color: #343a40;
+  font-size: 1.2rem;
   margin-bottom: 0.5rem;
-  color: #222;
 }
 
 .booking-card p {
-  font-size: 0.95rem;
+  margin: 0.3rem 0;
   color: #555;
-  margin: 5px 0;
 }
 
-/* Cancel Button */
+/* Cancel button */
 .cancel-btn {
-  float: right;
-  background: #dc3545;
+  margin-top: 1rem;
+  background-color: #dc3545;
   color: white;
+  padding: 0.5rem 1rem;
   border: none;
-  padding: 8px 16px;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  box-shadow: 0 3px 10px rgba(220, 53, 69, 0.2);
-  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-  margin-top: 0.5rem;
+  transition: background-color 0.3s ease;
 }
 
 .cancel-btn:hover {
-  background: #b52a36;
-  transform: scale(1.05);
-  box-shadow: 0 5px 14px rgba(181, 42, 54, 0.3);
+  background-color: #bd2130;
 }
 
-/* Sort Button */
-.sort-btn {
-  margin-bottom: 1.2rem;
-  background: #007bff;
-  color: #fff;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
+/* Review Section Styles (unchanged except card tweaks) */
+.reviews-section {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.reviews-section h4 {
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  color: #343a40;
+}
+
+.reviews-list {
+  margin-bottom: 1rem;
+}
+
+.review-item {
+  background-color: #f1f3f5;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.review-rating {
+  color: #ffc107;
+  margin-bottom: 0.3rem;
+}
+
+.star-filled {
+  color: #ffc107;
+}
+
+.star-empty {
+  color: #e0e0e0;
+}
+
+.review-text {
+  font-size: 0.9rem;
+  color: #495057;
+  margin: 0;
+}
+
+/* Review Form */
+.review-form {
+  background-color: #e9ecef;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.review-form h5 {
   font-size: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
-  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  margin-bottom: 0.8rem;
+  color: #343a40;
 }
 
-.sort-btn:hover {
-  background: #0056b3;
-  transform: scale(1.03);
-  box-shadow: 0 6px 16px rgba(0, 86, 179, 0.3);
+.rating-input {
+  margin-bottom: 0.8rem;
 }
 
-/* Animation */
-@keyframes fadeInCard {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.rating-input label {
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.rating-input select {
+  padding: 0.4rem;
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+}
+
+.review-form textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 10px;
+  border: 1px solid #ced4da;
+  margin-bottom: 0.8rem;
+  resize: vertical;
+}
+
+.review-buttons {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.add-review-btn,
+.submit-review-btn,
+.cancel-review-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-review-btn {
+  background-color: #20c997;
+  color: white;
+  border: none;
+}
+
+.add-review-btn:hover {
+  background-color: #17a589;
+}
+
+.submit-review-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.submit-review-btn:hover {
+  background-color: #0056b3;
+}
+
+.cancel-review-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+}
+
+.cancel-review-btn:hover {
+  background-color: #5a6268;
 }

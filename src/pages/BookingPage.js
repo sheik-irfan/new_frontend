@@ -4,6 +4,7 @@ import axios from "axios";
 import { jsPDF } from "jspdf";
 import { motion } from "framer-motion";
 import "../styles/BookingPage.css"; // Updated CSS file for styling
+import Sidebar from "../components/Sidebar"; 
 
 const API_URL = "http://localhost:1212/api";
 
@@ -17,6 +18,7 @@ const BookingPage = () => {
   const [airplane, setAirplane] = useState(null);
   const [passengerCount, setPassengerCount] = useState(1);
   const [passengerDetails, setPassengerDetails] = useState([{ name: "", age: "", gender: "" }]);
+  const [collapsed, setCollapsed] = useState(false);
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
@@ -187,7 +189,12 @@ const BookingPage = () => {
   if (!flight) return <p style={{ padding: "2rem" }}>Loading flight details...</p>;
 
   return (
-    <div className="booking-page">
+    <div style={{ display: "flex", minHeight: "100vh" }}>
+      
+       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} onLogout={() => {}} />
+       <div className="booking-page">
+    
+      
       <motion.h2
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -335,11 +342,11 @@ const BookingPage = () => {
         <button onClick={confirmBooking} disabled={loading}>
           {loading ? "Processing..." : "Confirm Booking"}
         </button>
-        {bookingDetails && (
+        {/* {bookingDetails && (
           <>
             <button onClick={generateTicket}>Download Ticket</button>
           </>
-        )}
+        )} */}
       </motion.div>
 
       {bookingDetails && (
@@ -356,6 +363,7 @@ const BookingPage = () => {
           <button onClick={generateTicket}>Download Ticket</button>
         </motion.div>
       )}
+    </div>
     </div>
   );
 };

@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/AdminDashboard.css";
 import "animate.css";
+import AdminSidebar from "../components/AdminSidebar"; // Import AdminSidebar component
 
 const API_URL = "http://localhost:1212/api";
 
@@ -12,7 +13,7 @@ const AdminDashboard = ({ token: propToken }) => {
   const [airplanes, setAirplanes] = useState([]);
   const [airports, setAirports] = useState([]);
   const [users, setUsers] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // State for sidebar toggle
   const navigate = useNavigate();
 
   const token = propToken || localStorage.getItem("token");
@@ -86,20 +87,9 @@ const AdminDashboard = ({ token: propToken }) => {
   };
 
   return (
-    <div className={`admin-dashboard animate__animated animate__fadeIn ${sidebarOpen ? "sidebar-open" : ""}`}>
+    <div className={`admin-dashboard ${sidebarCollapsed ? "sidebar-collapsed" : "sidebar-expanded"}`}>
       {/* Sidebar */}
-      <aside className={`admin-sidebar animate__animated animate__fadeInLeft ${sidebarOpen ? "open" : "closed"}`}>
-        <div className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
-          {sidebarOpen ? "❮" : "❯"}
-        </div>
-        <h2>Admin Panel</h2>
-        <ul>
-          <li><Link to="/adminflights"> Manage Flights</Link></li>
-          <li><Link to="/adminairplanes"> Manage Airplanes</Link></li>
-          <li><Link to="/adminairports"> Manage Airports</Link></li>
-          <li><Link to="/adminusers"> Manage Users</Link></li>
-        </ul>
-      </aside>
+      <AdminSidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
 
       {/* Main */}
       <main className="admin-main">
